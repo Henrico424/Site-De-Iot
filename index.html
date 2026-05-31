@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElectroGuia — Componentes Eletrônicos</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050810;--bg2:#090f1c;--bg3:#0d1626;--bg4:#111e32;--teal:#00e5c0;--teal2:#00b89a;--amber:#ffb800;--rose:#ff4e7e;--blue:#4ea8ff;--violet:#b97dff;--lime:#8fff4e;--cyan:#00cfff;--orange:#ff7a2f;--text:#ccdcf4;--dim:#4e6885;--border:rgba(0,229,192,0.1);--r:16px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+#pbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:500}
+#pfill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));box-shadow:0 0 10px var(--teal);transition:width .08s}
+nav{position:fixed;top:3px;left:0;right:0;z-index:400;height:60px;background:rgba(5,8,16,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem}
+.nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:.9rem;color:var(--teal);letter-spacing:2px;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.nav-logo em{font-style:normal;color:var(--amber)}
+.nav-logo-ic{width:28px;height:28px;border:1.5px solid var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8rem;background:rgba(0,229,192,.08)}
+.nav-links{display:flex;gap:.15rem;list-style:none}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:.67rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:5px;transition:color .2s,background .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--teal);background:rgba(0,229,192,.08)}
+.nav-cart{display:flex;align-items:center;gap:.5rem;cursor:pointer;background:rgba(0,229,192,.07);border:1px solid rgba(0,229,192,.18);border-radius:6px;padding:5px 12px;transition:all .2s;user-select:none}
+.nav-cart:hover{background:rgba(0,229,192,.13)}
+.nav-cart-lbl{font-size:.67rem;font-family:'Orbitron',monospace;letter-spacing:1px;color:var(--teal)}
+.cc{background:var(--teal);color:#050810;border-radius:10px;font-size:.6rem;font-weight:900;padding:1px 6px;font-family:'Orbitron',monospace;min-width:18px;text-align:center;display:none}
+.cc.on{display:inline-block}
+@media(max-width:680px){.nav-links{display:none}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 4rem;overflow:hidden;z-index:1}
+#hcv{position:absolute;inset:0;pointer-events:none;opacity:.65}
+.hc{position:relative;z-index:2;max-width:800px;margin:0 auto}
+.hbadge{display:inline-flex;align-items:center;gap:.5rem;font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:3px;color:var(--teal);border:1px solid rgba(0,229,192,.22);padding:5px 16px;border-radius:30px;margin-bottom:1.5rem;animation:fu .6s ease both;background:rgba(0,229,192,.04)}
+.hbadge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:glw 2s infinite}
+h1.ht{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(2rem,5.5vw,5.2rem);line-height:1.05;color:#fff;animation:fu .6s .08s ease both}
+h1.ht em{font-style:normal;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1.ht .ln2{color:var(--amber)}
+.hd{max-width:560px;margin:1.5rem auto 0;font-size:1rem;font-weight:300;color:var(--dim);line-height:1.85;animation:fu .6s .16s ease both}
+.hbtns{margin-top:2.5rem;display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap;animation:fu .6s .24s ease both}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:12px 24px;border-radius:8px;font-family:'Exo 2',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.5px;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,box-shadow .15s}
+.btn-p{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#050810}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,229,192,.35)}
+.btn-o{background:transparent;color:var(--teal);border:1.5px solid rgba(0,229,192,.28)}
+.btn-o:hover{background:rgba(0,229,192,.07);transform:translateY(-2px)}
+.btn-am{background:linear-gradient(135deg,var(--amber),#e09000);color:#050810}
+.btn-am:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,184,0,.3)}
+.hstats{display:flex;gap:2.5rem;margin-top:3rem;animation:fu .6s .32s ease both;flex-wrap:wrap;justify-content:center}
+.stat-n{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
+.stat-n em{font-style:normal;color:var(--teal)}
+.stat-l{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:.3rem}
+.hchips{display:flex;gap:.45rem;margin-top:2.5rem;flex-wrap:wrap;justify-content:center;animation:fu .6s .4s ease both}
+.chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.7rem;color:var(--dim);font-weight:500;transition:all .2s;cursor:pointer}
+.chip:hover,.chip.on{color:var(--teal);border-color:rgba(0,229,192,.32);background:rgba(0,229,192,.06)}
+.chip span{color:var(--teal);margin-right:3px;font-family:'Orbitron',monospace;font-size:.58rem}
+.layout{display:grid;grid-template-columns:176px 1fr;max-width:1280px;margin:0 auto}
+.sb{position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto;padding:1.25rem 0;border-right:1px solid var(--border);z-index:10;scrollbar-width:none}
+.sb::-webkit-scrollbar{display:none}
+.sb-title{font-family:'Orbitron',monospace;font-size:.52rem;letter-spacing:3px;text-transform:uppercase;color:var(--dim);padding:.4rem 1.25rem;margin-bottom:.2rem}
+.sb-a{display:flex;align-items:center;gap:.65rem;padding:.6rem 1.25rem;text-decoration:none;color:var(--dim);font-size:.78rem;font-weight:500;border-left:2px solid transparent;transition:all .2s;user-select:none}
+.sb-a:hover{color:var(--text);background:rgba(0,229,192,.04)}
+.sb-a.on{border-left-color:var(--sc,var(--teal));color:var(--sc,var(--teal));background:rgba(0,229,192,.04)}
+.sb-ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.68rem;flex-shrink:0;font-family:'Orbitron',monospace;font-weight:700;background:rgba(0,229,192,0.15)) 12%,transparent);color:var(--sc,var(--teal))}
+.sb-n{font-family:'Orbitron',monospace;font-size:.5rem;color:inherit;opacity:.55;display:block}
+.sb-div{margin:.4rem 1.25rem;border:none;border-top:1px solid var(--border)}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sb{display:none}}
+.mc{min-width:0;padding:0 1.75rem;position:relative;z-index:1}
+section{position:relative;z-index:1}
+.sh{text-align:center;padding:4rem 1.5rem 2.75rem}
+.sl{font-family:'Orbitron',monospace;font-size:.57rem;letter-spacing:3.5px;color:var(--teal);text-transform:uppercase;margin-bottom:.6rem}
+.st{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(1.4rem,3vw,2.4rem);color:#fff;line-height:1.2}
+.ss{margin-top:.65rem;color:var(--dim);font-size:.9rem;font-weight:300;max-width:490px;margin-inline:auto;line-height:1.75}
+.strips{display:flex;flex-direction:column;gap:2rem;padding-bottom:5rem}
+.strip{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:relative;transition:border-color .3s,box-shadow .3s,transform .25s}
+.strip:hover{transform:translateY(-3px);border-color:rgba(0,229,192,0.15) 35%,transparent);box-shadow:0 16px 50px rgba(0,229,192,0.15) 12%,transparent)}
+.strip::before{content:'';position:absolute;inset:0;border-radius:var(--r);background:radial-gradient(ellipse at 0% 0%,rgba(0,229,192,0.15) 5%,transparent),transparent 60%);pointer-events:none}
+.strip::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--sc),rgba(0,229,192,0.15) 40%,transparent));border-radius:var(--r) 0 0 var(--r)}
+.s-hd{display:grid;grid-template-columns:96px 1fr auto;align-items:start}
+.s-ic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:1.75rem .9rem;background:rgba(0,229,192,0.15) 5%,transparent);border-right:1px solid var(--border)}
+.s-num{font-family:'Orbitron',monospace;font-size:.57rem;letter-spacing:2px;color:rgba(0,229,192,0.15) 50%,transparent);font-weight:700}
+.s-svgbox{width:54px;height:54px;border-radius:12px;border:1.5px solid rgba(0,229,192,0.15) 22%,transparent);background:rgba(0,229,192,0.15) 10%,transparent);display:flex;align-items:center;justify-content:center}
+.s-tc{padding:1.4rem 1.6rem .9rem}
+.s-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;color:var(--sc);background:rgba(0,229,192,0.15) 10%,transparent);border:1px solid rgba(0,229,192,0.15) 20%,transparent);border-radius:4px;padding:2px 9px;margin-bottom:.45rem}
+.s-tc h3{font-family:'Orbitron',monospace;font-weight:900;font-size:1.08rem;color:#fff;line-height:1.25}
+.s-sub{font-size:.77rem;color:var(--sc);font-weight:500;margin-top:.22rem}
+.s-bgs{display:flex;gap:.35rem;margin-top:.55rem;flex-wrap:wrap}
+.badge{font-size:.63rem;padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.b-easy{background:rgba(143,255,78,.1);color:#8fff4e;border:1px solid rgba(143,255,78,.18)}
+.b-med{background:rgba(255,184,0,.1);color:#ffb800;border:1px solid rgba(255,184,0,.18)}
+.b-c1{background:rgba(0,229,192,.09);color:#00e5c0;border:1px solid rgba(0,229,192,.18)}
+.b-c2{background:rgba(78,168,255,.09);color:#4ea8ff;border:1px solid rgba(78,168,255,.18)}
+.s-add{padding:1.4rem 1.25rem .9rem;display:flex;align-items:flex-start;justify-content:flex-end}
+.btn-add{display:flex;align-items:center;gap:.4rem;background:rgba(0,229,192,0.15) 10%,transparent);border:1px solid rgba(0,229,192,0.15) 25%,transparent);color:var(--sc);border-radius:6px;padding:6px 11px;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Exo 2',sans-serif;white-space:nowrap}
+.btn-add:hover{background:rgba(0,229,192,0.15) 18%,transparent)}
+.btn-add.done{background:var(--sc);color:#050810;border-color:var(--sc)}
+.s-tabs{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg3);overflow-x:auto;scrollbar-width:none}
+.s-tabs::-webkit-scrollbar{display:none}
+.stab{padding:.68rem 1.2rem;font-size:.73rem;font-weight:600;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s,background .2s;user-select:none}
+.stab:hover{color:var(--text);background:rgba(0,229,192,.03)}
+.stab.on{color:var(--sc);border-bottom-color:var(--sc)}
+.tp{display:none;padding:1.4rem 1.6rem}
+.tp.show{display:block}
+.tp2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.1rem}
+@media(max-width:600px){.tp2{grid-template-columns:1fr}}
+.tpb{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.9rem 1.15rem}
+.tpbt{font-size:.59rem;font-family:'Orbitron',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:.6rem}
+.tpb ul{list-style:none;display:flex;flex-direction:column;gap:.38rem}
+.tpb li{font-size:.84rem;color:var(--text);padding-left:1.05rem;position:relative;line-height:1.5}
+.tpb li::before{content:'▸';position:absolute;left:0;color:var(--sc);font-size:.64rem;top:4px}
+.s-desc{font-size:.89rem;line-height:1.82;color:var(--dim);margin-bottom:1.1rem}
+.s-desc strong{color:var(--sc)}
+.s-desc code{background:var(--bg4);color:var(--teal);padding:1px 6px;border-radius:4px;font-size:.8rem}
+.fbox{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid rgba(0,229,192,0.15) 20%,transparent);border-radius:10px;padding:.85rem 1.2rem;text-align:center;font-family:'Orbitron',monospace;font-size:.77rem;color:var(--sc);letter-spacing:.4px;margin-bottom:1.1rem}
+.fbox small{display:block;color:var(--dim);font-family:'Exo 2',sans-serif;font-size:.73rem;margin-top:.28rem;letter-spacing:0;font-style:italic}
+.prow{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.pb{background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:.72rem;color:var(--sc);font-weight:600;cursor:default;transition:background .2s}
+.pb:hover{background:rgba(0,229,192,0.15) 10%,transparent)}
+.wr{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.1rem;margin-bottom:1.1rem}
+.wrt{font-size:.59rem;font-family:'Orbitron',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:.9rem}
+.wdiag{width:100%;max-width:520px;margin:0 auto 1rem;display:block}
+.wsteps{display:flex;flex-direction:column;gap:.45rem;margin-top:.9rem}
+.ws{display:flex;align-items:flex-start;gap:.7rem;font-size:.82rem;color:var(--dim);line-height:1.5}
+.wsn{font-family:'Orbitron',monospace;font-size:.58rem;font-weight:700;color:var(--sc);background:rgba(0,229,192,0.15) 11%,transparent);border-radius:4px;padding:2px 7px;flex-shrink:0;margin-top:1px}
+.cw{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.1rem}
+.cwt{font-size:.59rem;font-family:'Orbitron',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:.9rem}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.65rem;margin-bottom:.9rem}
+.cf label{display:block;font-size:.68rem;color:var(--dim);margin-bottom:.28rem;font-weight:500}
+.cf input,.cf select{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 9px;font-size:.83rem;font-family:'Exo 2',sans-serif;outline:none;transition:border-color .2s}
+.cf input:focus,.cf select:focus{border-color:var(--sc)}
+.cr{background:var(--bg2);border:1px solid rgba(0,229,192,0.15) 20%,transparent);border-radius:8px;padding:.9rem 1.15rem;min-height:50px;display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;text-align:center}
+.crv{font-family:'Orbitron',monospace;font-size:1.25rem;font-weight:900;color:var(--sc)}
+.crl{font-size:.73rem;color:var(--dim)}
+.crs{width:100%;font-size:.74rem;color:var(--dim);margin-top:.12rem}
+.ch{font-size:.74rem;color:var(--dim);margin-top:.45rem;text-align:center;line-height:1.5}
+.ct-track{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:.25rem 1.6rem 1.15rem;border-top:1px solid var(--border)}
+.pc{border-radius:9px;overflow:hidden;aspect-ratio:4/3;background:var(--bg3);border:1px solid var(--border);position:relative}
+.pc img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s}
+.pc img.ld{opacity:1}
+.pc .ov{position:absolute;inset:0;display:flex;align-items:flex-end;padding:.4rem;background:linear-gradient(transparent 50%,rgba(5,8,16,.85));opacity:0;transition:opacity .2s}
+.pc:hover .ov{opacity:1}
+.ov span{font-size:.65rem;color:rgba(255,255,255,.9);line-height:1.3}
+.sk{position:absolute;inset:0;background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:sh 1.4s infinite}
+.pc.ok .sk{display:none}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(max-width:480px){.ct-track{grid-template-columns:repeat(2,1fr)}}
+.cdraw{position:fixed;bottom:0;right:0;width:320px;max-height:72vh;background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;z-index:300;transform:translateY(calc(100% - 50px));transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,.4)}
+.cdraw.open{transform:translateY(0)}
+.cdh{padding:.8rem 1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.cdht{font-family:'Orbitron',monospace;font-size:.73rem;color:var(--teal);font-weight:700;letter-spacing:1px}
+.cdhc{background:var(--teal);color:#050810;border-radius:7px;font-size:.62rem;font-weight:900;padding:2px 8px;font-family:'Orbitron',monospace}
+.cdch{color:var(--dim);transition:transform .3s;font-size:.7rem}
+.cdraw.open .cdch{transform:rotate(180deg)}
+.cdb{overflow-y:auto;max-height:calc(72vh - 50px);padding:.9rem 1.4rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.cde{text-align:center;color:var(--dim);font-size:.83rem;padding:2rem 0;line-height:1.6}
+.cdi{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.cdi:last-child{border-bottom:none}
+.cdid{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cdin{font-size:.82rem;color:var(--text);flex:1;font-weight:500}
+.cdir{color:var(--dim);cursor:pointer;font-size:.78rem;padding:2px 6px;border-radius:4px;transition:color .2s}
+.cdir:hover{color:var(--rose)}
+.cdact{padding:.65rem 0 .2rem;display:flex;gap:.5rem}
+.btn-exp{flex:1;background:var(--teal);color:#050810;border:none;border-radius:6px;padding:8px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif}
+.btn-clr{background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 11px;font-size:.73rem;cursor:pointer;font-family:'Exo 2',sans-serif}
+.btn-clr:hover{color:var(--rose);border-color:rgba(255,78,126,.3)}
+.fw{max-width:880px;margin:0 auto;padding:0 0 5rem}
+.fc{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.fhd{padding:1.75rem 2rem 1.4rem;border-bottom:1px solid var(--border)}
+.fhd h2{font-family:'Orbitron',monospace;font-size:.95rem;font-weight:900;color:#fff;margin-bottom:.4rem}
+.fhd p{color:var(--dim);font-size:.84rem;line-height:1.7}
+.fsteps{display:flex;border-bottom:1px solid var(--border);background:var(--bg3)}
+.fst{flex:1;padding:.75rem .5rem;text-align:center;font-size:.62rem;font-family:'Orbitron',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;user-select:none}
+.fst.on{color:var(--teal);border-bottom-color:var(--teal)}
+.fst.dn{color:var(--teal2)}
+.fst .fsn{display:block;font-size:.5rem;opacity:.5;margin-bottom:.1rem}
+.fp{display:none;padding:1.6rem 2rem}
+.fp.show{display:block}
+.pcats{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.75rem}
+.pcat{background:var(--bg3);border:2px solid var(--border);border-radius:11px;padding:1.15rem;cursor:pointer;transition:all .2s;user-select:none}
+.pcat:hover{border-color:rgba(0,229,192,.26);transform:translateY(-2px)}
+.pcat.sel{border-color:var(--teal);background:rgba(0,229,192,.06)}
+.pci{font-size:1.3rem;margin-bottom:.38rem}
+.pcn{font-weight:700;font-size:.84rem;color:#fff;margin-bottom:.18rem}
+.pch{font-size:.72rem;color:var(--dim);line-height:1.4}
+.flist{display:flex;flex-direction:column;gap:.55rem}
+.fi{display:flex;align-items:center;gap:.9rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:.85rem 1.15rem;cursor:pointer;transition:all .18s;user-select:none}
+.fi:hover{border-color:rgba(0,229,192,.2)}
+.fi.sel{border-color:var(--teal);background:rgba(0,229,192,.05)}
+.fck{width:21px;height:21px;border-radius:5px;border:2px solid var(--dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.68rem;transition:all .2s;color:transparent}
+.fi.sel .fck{border-color:var(--teal);background:var(--teal);color:#050810;font-weight:900}
+.fem{font-size:.98rem;flex-shrink:0}
+.fn{font-weight:600;font-size:.86rem;color:#fff}
+.fd{font-size:.75rem;color:var(--dim);margin-top:.1rem}
+.fctags{display:flex;flex-wrap:wrap;gap:.28rem;margin-top:.32rem}
+.fct{font-size:.62rem;color:var(--teal);background:rgba(0,229,192,.08);border-radius:3px;padding:1px 6px}
+.rinto{background:rgba(0,229,192,.04);border:1px solid rgba(0,229,192,.13);border-radius:9px;padding:.85rem 1.15rem;margin-bottom:1.1rem;font-size:.85rem;color:var(--text);line-height:1.7}
+.rinto strong{color:var(--teal)}
+.rcs{display:flex;flex-direction:column;gap:.7rem}
+.rc{background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.rc:hover{box-shadow:0 5px 22px rgba(0,0,0,.3)}
+.rch{display:flex;align-items:center;gap:.85rem;padding:.85rem 1.15rem;cursor:pointer;user-select:none}
+.rcd{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.rcn{font-weight:700;font-size:.88rem;color:#fff;flex:1}
+.rcw{font-size:.76rem;color:var(--dim);margin-top:.04rem}
+.pl{font-size:.58rem;font-family:'Orbitron',monospace;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.pl.h{color:#00e5c0;background:rgba(0,229,192,.1)}
+.pl.m{color:#ffb800;background:rgba(255,184,0,.1)}
+.pl.l{color:#5a7898;background:rgba(90,120,152,.1)}
+.rcc{color:var(--dim);font-size:.68rem;transition:transform .25s;flex-shrink:0}
+.rc.open .rcc{transform:rotate(180deg)}
+.rcb{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.rc.open .rcb{max-height:500px}
+.rcd2{padding:.7rem 1.15rem 1.1rem;border-top:1px solid var(--border);font-size:.83rem;color:var(--dim);line-height:1.7}
+.rcd2 strong{color:var(--text)}
+.rctp{background:var(--bg2);border-radius:7px;padding:.7rem .95rem;margin-top:.55rem;border-left:3px solid var(--sc,var(--teal))}
+.rctp strong{color:var(--sc,var(--teal));font-size:.7rem;font-family:'Orbitron',monospace;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:.22rem}
+.rcls{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.45rem}
+.rcl{font-size:.72rem;color:var(--teal);border:1px solid rgba(0,229,192,.2);border-radius:4px;padding:3px 9px;text-decoration:none;transition:background .2s}
+.rcl:hover{background:rgba(0,229,192,.07)}
+.fnav{display:flex;justify-content:space-between;align-items:center;padding:1.15rem 2rem;border-top:1px solid var(--border);background:var(--bg3)}
+.fni{font-size:.74rem;color:var(--dim)}
+.rt{width:100%;border-collapse:collapse;font-size:.8rem}
+.rt thead tr{border-bottom:1px solid var(--border)}
+.rt th{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);padding:.65rem .9rem;text-align:left}
+.rt td{padding:.82rem .9rem;border-bottom:1px solid rgba(0,229,192,.04);vertical-align:middle;line-height:1.5}
+.rt tr:hover td{background:rgba(0,229,192,.018)}
+.rt td:first-child{color:#fff;font-weight:600}
+.rn2{display:flex;align-items:center;gap:.5rem}
+.rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+hr.dv{border:none;border-top:1px solid var(--border);position:relative;z-index:1}
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;color:var(--dim);font-size:.8rem}
+footer strong{color:var(--teal)}
+footer p+p{margin-top:.32rem}
+.reveal{opacity:1;transform:none}
+.reveal.in{opacity:1;transform:none}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes glw{0%,100%{box-shadow:0 0 0 0 rgba(0,229,192,.4)}70%{box-shadow:0 0 0 6px rgba(0,229,192,0)}}
+</style>
+</head>
+<body>
+<div id="pbar"><div id="pfill"></div></div>
+<nav>
+  <a class="nav-logo" href="#"><div class="nav-logo-ic">⚡</div><em>ELETRÔ</em>GUIA</a>
+  <ul class="nav-links">
+    <li><a href="#comp-sec" data-nav>Componentes</a></li>
+    <li><a href="#finder-sec" data-nav>Qual preciso?</a></li>
+    <li><a href="#ref-sec" data-nav>Referência</a></li>
+  </ul>
+  <div class="nav-cart" onclick="togCart()">
+    <span class="nav-cart-lbl">🛒 PROJETO</span>
+    <span class="cc" id="cc">0</span>
+  </div>
+</nav>
+
+<header class="hero" id="hero-sec">
+  <canvas id="hcv"></canvas>
+  <div class="hc">
+    <div class="hbadge">⚡ Guia interativo — calculadoras, diagramas e fotos reais</div>
+    <h1 class="ht">Entenda cada<br><em>componente</em><br><span class="ln2">do seu projeto</span></h1>
+    <p class="hd">Calculadoras interativas · Diagramas de ligação em SVG · Fotos reais<br>Assistente de projeto · Lista de compras integrada</p>
+    <div class="hbtns">
+      <a class="btn btn-p" href="#comp-sec">Explorar componentes</a>
+      <a class="btn btn-o" href="#finder-sec">Descobrir o que preciso</a>
+      <a class="btn btn-am" href="#ref-sec">Referência rápida</a>
+    </div>
+    <div class="hstats">
+      <div><div class="stat-n">8<em>+</em></div><div class="stat-l">Categorias</div></div>
+      <div><div class="stat-n">24<em>+</em></div><div class="stat-l">Componentes</div></div>
+      <div><div class="stat-n">8</div><div class="stat-l">Calculadoras</div></div>
+      <div><div class="stat-n">0<em>R$</em></div><div class="stat-l">Custo</div></div>
+    </div>
+    <div class="hchips"><div class="chip" onclick="scrollTo2(01)" id="chip-01"><span>01</span>Resistores</div><div class="chip" onclick="scrollTo2(02)" id="chip-02"><span>02</span>Capacitores</div><div class="chip" onclick="scrollTo2(03)" id="chip-03"><span>03</span>LEDs</div><div class="chip" onclick="scrollTo2(04)" id="chip-04"><span>04</span>Transistores + Relé</div><div class="chip" onclick="scrollTo2(05)" id="chip-05"><span>05</span>Protoboard + Jumpers</div><div class="chip" onclick="scrollTo2(06)" id="chip-06"><span>06</span>Push Button + Pot.</div><div class="chip" onclick="scrollTo2(07)" id="chip-07"><span>07</span>Sensores</div><div class="chip" onclick="scrollTo2(08)" id="chip-08"><span>08</span>Saídas e Atuadores</div></div>
+  </div>
+</header>
+
+<div class="layout" id="comp-sec">
+  <aside class="sb">
+    <div class="sb-title">Componentes</div>
+    <a class="sb-a" style="--sc:#00e5c0" href="#card-1" data-sb="01"><div class="sb-ic" style="--sc:#00e5c0">01</div><div><div class="sb-n">01</div>Resistores</div></a>
+<a class="sb-a" style="--sc:#ffb800" href="#card-2" data-sb="02"><div class="sb-ic" style="--sc:#ffb800">02</div><div><div class="sb-n">02</div>Capacitores</div></a>
+<a class="sb-a" style="--sc:#ff4e7e" href="#card-3" data-sb="03"><div class="sb-ic" style="--sc:#ff4e7e">03</div><div><div class="sb-n">03</div>LEDs</div></a>
+<a class="sb-a" style="--sc:#b97dff" href="#card-4" data-sb="04"><div class="sb-ic" style="--sc:#b97dff">04</div><div><div class="sb-n">04</div>Transistores + Relé</div></a>
+<a class="sb-a" style="--sc:#8fff4e" href="#card-5" data-sb="05"><div class="sb-ic" style="--sc:#8fff4e">05</div><div><div class="sb-n">05</div>Protoboard + Jumpers</div></a>
+<a class="sb-a" style="--sc:#4ea8ff" href="#card-6" data-sb="06"><div class="sb-ic" style="--sc:#4ea8ff">06</div><div><div class="sb-n">06</div>Push Button + Pot.</div></a>
+<a class="sb-a" style="--sc:#00cfff" href="#card-7" data-sb="07"><div class="sb-ic" style="--sc:#00cfff">07</div><div><div class="sb-n">07</div>Sensores</div></a>
+<a class="sb-a" style="--sc:#ff7a2f" href="#card-8" data-sb="08"><div class="sb-ic" style="--sc:#ff7a2f">08</div><div><div class="sb-n">08</div>Saídas e Atuadores</div></a>
+    <hr class="sb-div">
+    <a class="sb-a" href="#finder-sec"><div class="sb-ic" style="font-size:.9rem">🔍</div><div>Assistente</div></a>
+    <a class="sb-a" href="#ref-sec"><div class="sb-ic" style="font-size:.9rem">📋</div><div>Referência</div></a>
+  </aside>
+  <main class="mc">
+    <div class="sh reveal">
+      <div class="sl">◈ Os 8 blocos fundamentais</div>
+      <h2 class="st">Componentes Eletrônicos</h2>
+      <p class="ss">Cada categoria tem um papel único. Explore descrição, diagrama de ligação e calculadora interativa.</p>
+    </div>
+    <div class="strips">
+<div class="strip reveal" style="--sc:#00e5c0" id="card-1">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">01</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#00e5c0" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#00e5c0" font-family="Orbitron,sans-serif" font-weight="900">01</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">01 — Controle de corrente</div>
+      <h3>Resistores</h3>
+      <div class="s-sub">Lei de Ohm: V = R × I</div>
+      <div class="s-bgs">
+        <span class="badge b-easy">Iniciante</span>
+        <span class="badge b-c1">R$0,10–2,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-1','Resistores','#00e5c0',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-1-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-1-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-1-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-1-t1">
+    <p class="s-desc">O resistor é o <strong>limitador de corrente</strong> do circuito. Sem ele, LEDs queimam em milissegundos e microcontroladores são destruídos. As <strong>faixas coloridas</strong> no corpo codificam o valor exato em Ohms — aprenda a tabela de cores e você lê qualquer resistor de olho. Combinado com a Lei de Ohm, você calcula qualquer grandeza do circuito: <code>R = (Vcc − Vf) ÷ If</code> é o cálculo mais usado no dia a dia.</p>
+    <div class="fbox">R = V ÷ I &nbsp;·&nbsp; V = R × I &nbsp;·&nbsp; I = V ÷ R<small>Ohm (Ω) · kΩ · MΩ — faixas coloridas no corpo indicam o valor exato</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Limitar corrente e proteger LEDs</li><li>Pull-up/down em entradas digitais (10kΩ)</li><li>Divisor de tensão para ajuste de sinais</li><li>Definir ganho em amplificadores com transistor</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Sempre que houver LED no circuito</li><li>Ao conectar botões a pinos digitais</li><li>Para proteger saídas do Arduino/ESP32</li><li>Em qualquer circuito com tensão variável</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Todo circuito</span><span class="pb">Acender LED</span><span class="pb">Arduino Starter</span><span class="pb">Amplificador</span><span class="pb">Sensor de tensão</span></div>
+  </div>
+  <div class="tp" id="card-1-t2">
+    <div class="wr" id="wsvg-01">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Identifique o valor pelo código de cores ou meça com multímetro.</span></div><div class="ws"><span class="wsn">02</span><span>Conecte um terminal ao pino positivo ou saída do microcontrolador.</span></div><div class="ws"><span class="wsn">03</span><span>Conecte o outro terminal ao ânodo (+) do LED ou componente a proteger.</span></div><div class="ws"><span class="wsn">04</span><span>Calcule sempre: R = (Vcc − Vf) ÷ If — ex.: (5−2) ÷ 0.02 = <strong>150Ω</strong></span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-1-t3">
+    <div class="calc-holder" id="calc-resistor"></div>
+  </div>
+  <div class="ct-track" data-wiki="Resistor,Electronic_color_code,Carbon_film_resistor" data-caps="Resistores coloridos,Código de cores,Resistor filme carbono"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#ffb800" id="card-2">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">02</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#ffb800" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#ffb800" font-family="Orbitron,sans-serif" font-weight="900">02</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">02 — Armazenamento de energia</div>
+      <h3>Capacitores</h3>
+      <div class="s-sub">Eletrolítico · Cerâmico · Polipropileno · SMD</div>
+      <div class="s-bgs">
+        <span class="badge b-easy">Iniciante</span>
+        <span class="badge b-c1">R$0,20–5,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-2','Capacitores','#ffb800',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-2-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-2-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-2-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-2-t1">
+    <p class="s-desc">O capacitor <strong>armazena energia em campo elétrico</strong> e a libera rapidamente quando o circuito precisa. <strong>Bloqueia DC mas deixa AC passar</strong> — daí sua importância em filtros e acopladores. Eletrolíticos têm polaridade (nunca inverta!). Cerâmicos são indispensáveis como <strong>bypass</strong>: um <code>100nF</code> perto do Vcc de cada CI elimina ruído que trava o sistema inteiro.</p>
+    <div class="fbox">E = ½ × C × V² &nbsp;·&nbsp; τ = R × C<small>Farad (F) · µF · nF · pF — capacitor eletrolítico TEM polaridade!</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Filtrar ruído na alimentação (bypass)</li><li>Suavizar tensão em fontes reguladas</li><li>Temporizadores e osciladores RC (NE555)</li><li>Acoplamento de sinal AC em amplificadores</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Em toda fonte de alimentação</li><li>Próximo ao Vcc de todo CI (100nF cerâmico)</li><li>Projetos com timer NE555 ou osciladores</li><li>Circuitos de áudio e filtros de frequência</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Fonte regulada</span><span class="pb">Timer NE555</span><span class="pb">Filtro de áudio</span><span class="pb">Bypass de CI</span></div>
+  </div>
+  <div class="tp" id="card-2-t2">
+    <div class="wr" id="wsvg-02">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Identifique o tipo: eletrolítico (cilíndrico com tarja) ou cerâmico (disco pequeno).</span></div><div class="ws"><span class="wsn">02</span><span>Eletrolítico: perna maior = positivo. Siga a marcação — NUNCA inverta!</span></div><div class="ws"><span class="wsn">03</span><span>Bypass: coloque 100nF cerâmico entre Vcc e GND o mais próximo do CI.</span></div><div class="ws"><span class="wsn">04</span><span>Filtro de fonte: 100–1000µF eletrolítico em paralelo com a saída.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-2-t3">
+    <div class="calc-holder" id="calc-capacitor"></div>
+  </div>
+  <div class="ct-track" data-wiki="Capacitor,Electrolytic_capacitor,Ceramic_capacitor" data-caps="Capacitores variados,Capacitor eletrolítico,Capacitor cerâmico"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#ff4e7e" id="card-3">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">03</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#ff4e7e" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#ff4e7e" font-family="Orbitron,sans-serif" font-weight="900">03</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">03 — Emissão de sinal luminoso</div>
+      <h3>LEDs</h3>
+      <div class="s-sub">3mm · 5mm · SMD · RGB · IR · UV · NeoPixel WS2812B</div>
+      <div class="s-bgs">
+        <span class="badge b-easy">Iniciante</span>
+        <span class="badge b-c1">R$0,10–3,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-3','LEDs','#ff4e7e',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-3-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-3-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-3-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-3-t1">
+    <p class="s-desc">O LED converte corrente elétrica em luz com alta eficiência. Tem <strong>polaridade obrigatória</strong>: ânodo (+, perna maior) e cátodo (−, perna menor com chanfro). <strong>Nunca conecte sem resistor em série</strong>. LED RGB tem 4 pinos — ânodo ou cátodo comum. O <code>NeoPixel WS2812B</code> é endereçável digitalmente: cor e brilho individuais por apenas 1 fio de dados.</p>
+    <div class="fbox">R = (Vcc − Vf) ÷ If<small>Vf≈2V (vm/am/vd) · Vf≈3.2V (azul/branco) · If=20mA padrão</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Indicadores de status (ligado/erro/alerta)</li><li>Iluminação RGB controlada por PWM</li><li>Display de 7 segmentos e matrizes de LEDs</li><li>LED IR para controle remoto e sensor de linha</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Qualquer feedback visual no projeto</li><li>Semáforo, painel de status, mood lamp</li><li>Sensor de linha (emissor IR + receptor)</li><li>Controle remoto infravermelho DIY</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Semáforo</span><span class="pb">RGB Mood Lamp</span><span class="pb">Display 7-seg</span><span class="pb">Fita NeoPixel</span><span class="pb">Robô de linha</span></div>
+  </div>
+  <div class="tp" id="card-3-t2">
+    <div class="wr" id="wsvg-03">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Identifique ânodo (+, perna maior) e cátodo (−, perna menor ou chanfro no corpo).</span></div><div class="ws"><span class="wsn">02</span><span>Calcule o resistor: R = (Vcc − Vf) ÷ 0.02A. Ex.: (5−2)÷0.02 = 150Ω → use 220Ω.</span></div><div class="ws"><span class="wsn">03</span><span>Monte: Vcc → Resistor → Ânodo(+) → Cátodo(−) → GND.</span></div><div class="ws"><span class="wsn">04</span><span>Arduino: pino digital → Resistor → Ânodo do LED → Cátodo → GND.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-3-t3">
+    <div class="calc-holder" id="calc-led"></div>
+  </div>
+  <div class="ct-track" data-wiki="Light-emitting_diode,LED_lamp,RGB_color_model" data-caps="LEDs coloridos 5mm,Lâmpada LED,LEDs RGB"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#b97dff" id="card-4">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">04</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#b97dff" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#b97dff" font-family="Orbitron,sans-serif" font-weight="900">04</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">04 — Comutação e controle</div>
+      <h3>Transistores + Relé</h3>
+      <div class="s-sub">NPN/PNP (BJT) · MOSFET · Relé eletromecânico · Optoacoplador</div>
+      <div class="s-bgs">
+        <span class="badge b-med">Intermediário</span>
+        <span class="badge b-c2">R$0,50–15,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-4','Transistores + Relé','#b97dff',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-4-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-4-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-4-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-4-t1">
+    <p class="s-desc">O transistor é a <strong>chave eletrônica</strong> do circuito: um sinal pequeno na base (BJT) ou gate (MOSFET) controla uma corrente muito maior. <code>BC547 NPN</code>: base HIGH liga a carga entre coletor e emissor. O <strong>relé</strong> usa eletromagnetismo para comutar cargas de 127/220V com <strong>isolação galvânica total</strong> — seu Arduino nunca toca nos 127V. Use sempre diodo 1N4007 antiparalelo na bobina.</p>
+    <div class="fbox">BJT: Ic = hFE × Ib &nbsp;·&nbsp; Rb = (Vin − 0.7) ÷ Ib<small>Relé: isolação galvânica — controle 3.3/5V aciona 127/220V com segurança total</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Acionar motor/buzzer com pino do Arduino</li><li>Amplificar sinal fraco de microfone/sensor</li><li>Controlar cargas 127/220V com relé</li><li>H-Bridge para motor DC bidirecional</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Carga exige mais de 40mA (limite do pino)</li><li>Projeto de automação com 127V</li><li>Robótica com motores potentes</li><li>Amplificadores de áudio analógico</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Automação residencial</span><span class="pb">Robótica</span><span class="pb">Amplificador</span><span class="pb">H-Bridge motor</span><span class="pb">Driver LED</span></div>
+  </div>
+  <div class="tp" id="card-4-t2">
+    <div class="wr" id="wsvg-04">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>NPN BC547: Coletor→carga→Vcc. Emissor→GND. Base→Rb(1kΩ)→sinal Arduino.</span></div><div class="ws"><span class="wsn">02</span><span>Calcule Rb: (Vin−0.7)÷(Ic÷(hFE/10)). Para 200mA e hFE=100 → Rb≈2kΩ.</span></div><div class="ws"><span class="wsn">03</span><span>Relé: bobina entre Vcc e coletor do NPN. Diodo 1N4007 antiparalelo na bobina.</span></div><div class="ws"><span class="wsn">04</span><span>Contatos NO/NC do relé conectam carga 127V completamente isolada do Arduino.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-4-t3">
+    <div class="calc-holder" id="calc-transistor"></div>
+  </div>
+  <div class="ct-track" data-wiki="Transistor,Relay,Power_MOSFET" data-caps="Transistores BJT,Módulo relé,Power MOSFET"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#8fff4e" id="card-5">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">05</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#8fff4e" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#8fff4e" font-family="Orbitron,sans-serif" font-weight="900">05</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">05 — Montagem de circuitos</div>
+      <h3>Protoboard + Jumpers</h3>
+      <div class="s-sub">Breadboard 400pts · 830pts · Jumpers M-M · M-F · F-F</div>
+      <div class="s-bgs">
+        <span class="badge b-easy">Iniciante</span>
+        <span class="badge b-c1">R$8–25,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-5','Protoboard + Jumpers','#8fff4e',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-5-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-5-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-5-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-5-t1">
+    <p class="s-desc">A protoboard permite montar circuitos <strong>sem solda</strong>, rápido e completamente reversível. No centro, cada linha horizontal une 5 furos internamente. Barramentos laterais são alimentação contínua. Os <strong>jumpers coloridos</strong> fazem as conexões: <code>vermelho=Vcc</code>, <code>preto=GND</code>, outras cores=sinais — convensão de cores acelera muito o debug.</p>
+    <div class="fbox">Furos centrais: conectados em grupos de 5 (linha horizontal)<small>Barramentos laterais (+/−): conectados na vertical — use para Vcc e GND</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Prototipar antes de fazer a PCB definitiva</li><li>Testar e modificar conexões em segundos</li><li>Conectar sensores e módulos ao Arduino</li><li>Aprender eletrônica sem solda ou ferramentas</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Em qualquer protótipo inicial</li><li>Para testar antes de soldar definitivamente</li><li>Aulas e experimentos práticos de eletrônica</li><li>Kit iniciante Arduino/ESP32</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Todo protótipo</span><span class="pb">Arduino Starter Kit</span><span class="pb">Aulas práticas</span><span class="pb">Primeiro circuito</span></div>
+  </div>
+  <div class="tp" id="card-5-t2">
+    <div class="wr" id="wsvg-05">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Use as barras laterais (+/−) para Vcc e GND — conecte ao Arduino primeiro.</span></div><div class="ws"><span class="wsn">02</span><span>Insira componentes atravessando o canal central (cada lado fica eletricamente separado).</span></div><div class="ws"><span class="wsn">03</span><span>Use jumpers para interligar pontos. Encaixe firme até sentir o clique suave.</span></div><div class="ws"><span class="wsn">04</span><span>Convenção de cores: vermelho=5V, laranja=3.3V, preto=GND, amarelo=sinal.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-5-t3">
+    <div class="calc-holder" id="calc-proto"></div>
+  </div>
+  <div class="ct-track" data-wiki="Breadboard,Jumper_wire,Electronic_circuit" data-caps="Protoboard 830 pontos,Jumpers coloridos,Circuito montado"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#4ea8ff" id="card-6">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">06</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#4ea8ff" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#4ea8ff" font-family="Orbitron,sans-serif" font-weight="900">06</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">06 — Entradas do sistema</div>
+      <h3>Push Button + Pot.</h3>
+      <div class="s-sub">Entrada digital (0/1) · Entrada analógica (0 a Vcc)</div>
+      <div class="s-bgs">
+        <span class="badge b-easy">Iniciante</span>
+        <span class="badge b-c1">R$0,50–8,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-6','Push Button + Pot.','#4ea8ff',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-6-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-6-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-6-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-6-t1">
+    <p class="s-desc">O <strong>push button</strong> gera sinal digital — HIGH (solto) ou LOW (pressionado com INPUT_PULLUP). Sem resistor pull-up/down, o pino flutua e dá leituras aleatórias. O <strong>potenciômetro</strong> tem 3 terminais: girando o eixo, o terminal central (cursor) fornece tensão analógica proporcional à posição, lida por <code>analogRead()</code> que retorna 0–1023.</p>
+    <div class="fbox">Pot.: Vout = Vcc × R2 ÷ (R1 + R2)<small>Button: INPUT_PULLUP interno (≈20kΩ) — detecta LOW quando pressionado</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Botão para iniciar, pausar ou resetar</li><li>Controle de velocidade de motor (pot.)</li><li>Ajuste de brilho de LED por PWM</li><li>Navegação em menus de display LCD</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Qualquer interação física do usuário</li><li>Controle manual de velocidade ou volume</li><li>Reset ou modo de configuração do sistema</li><li>Calibração e ajuste fino de parâmetros</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Controle de motor</span><span class="pb">Menu LCD</span><span class="pb">Dimmer LED</span><span class="pb">Joystick analógico</span><span class="pb">Configurador</span></div>
+  </div>
+  <div class="tp" id="card-6-t2">
+    <div class="wr" id="wsvg-06">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Push Button: um pino ao GND, outro ao pino digital. Declare: pinMode(pino, INPUT_PULLUP).</span></div><div class="ws"><span class="wsn">02</span><span>digitalRead() retorna LOW quando pressionado (lógica invertida com INPUT_PULLUP).</span></div><div class="ws"><span class="wsn">03</span><span>Potenciômetro: Terminal 1→Vcc, Terminal 3→GND, Terminal 2(cursor)→pino A0.</span></div><div class="ws"><span class="wsn">04</span><span>analogRead(A0) retorna 0–1023. Tensão = leitura × 5.0 / 1023.0 Volts.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-6-t3">
+    <div class="calc-holder" id="calc-analog"></div>
+  </div>
+  <div class="ct-track" data-wiki="Push_button,Potentiometer,Rotary_encoder" data-caps="Push button tátil,Potenciômetro rotativo,Encoder rotativo"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#00cfff" id="card-7">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">07</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#00cfff" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#00cfff" font-family="Orbitron,sans-serif" font-weight="900">07</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">07 — Sensores do ambiente</div>
+      <h3>Sensores</h3>
+      <div class="s-sub">LDR · DHT11/22 · HC-SR04 · PIR · MPU-6050 · MQ-2 · NTC</div>
+      <div class="s-bgs">
+        <span class="badge b-med">Intermediário</span>
+        <span class="badge b-c2">R$2–30,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-7','Sensores','#00cfff',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-7-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-7-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-7-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-7-t1">
+    <p class="s-desc">Sensores convertem grandezas físicas em sinais elétricos. <strong>LDR</strong>: resistência cai quando iluminado — use em divisor com 10kΩ. <strong>DHT22</strong>: temperatura (±0.5°C) e umidade por 1 fio digital. <strong>HC-SR04</strong>: distância por ultrassom de 2 a 400cm. <strong>PIR</strong>: detecta presença por infravermelho passivo — apenas <code>50µA</code> em standby. <strong>MQ-2</strong>: fumaça e gases inflamáveis.</p>
+    <div class="fbox">HC-SR04: dist(cm) = (eco_µs × 0.034) ÷ 2<small>DHT22: digital 1-wire · LDR: divisor com 10kΩ fixo · PIR: saída digital HIGH</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Acender luz ao anoitecer automaticamente (LDR)</li><li>Estação meteorológica em tempo real (DHT22)</li><li>Robô que desvia de obstáculos (HC-SR04)</li><li>Alarme silencioso de presença (PIR)</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Projeto que reage ao ambiente físico</li><li>Automação baseada em condições reais</li><li>Robótica com desvio de obstáculos</li><li>Sistema de alarme ou monitoramento IoT</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Estação do tempo</span><span class="pb">Robô autônomo</span><span class="pb">Smart Home</span><span class="pb">Alarme PIR</span><span class="pb">Detector de gás</span></div>
+  </div>
+  <div class="tp" id="card-7-t2">
+    <div class="wr" id="wsvg-07">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>LDR: divisor resistivo — LDR entre Vcc e A0, resistor 10kΩ entre A0 e GND.</span></div><div class="ws"><span class="wsn">02</span><span>DHT22: Vcc→5V, GND, Data→pino digital (com pull-up 4.7kΩ). Use biblioteca DHT.h.</span></div><div class="ws"><span class="wsn">03</span><span>HC-SR04: Vcc=5V, GND, Trig→pino, Echo→pino. Calcule: dist = (pulso_µs × 0.034) ÷ 2.</span></div><div class="ws"><span class="wsn">04</span><span>PIR: Vcc=5V, GND, OUT→pino digital. Aguarde 30–60s de warm-up inicial.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-7-t3">
+    <div class="calc-holder" id="calc-sensor"></div>
+  </div>
+  <div class="ct-track" data-wiki="Photoresistor,DHT11,Ultrasonic_transducer" data-caps="LDR fotoresistor,Sensor DHT11/22,Sensor ultrassônico HC-SR04"></div>
+</div>
+
+<div class="strip reveal" style="--sc:#ff7a2f" id="card-8">
+  <div class="s-hd">
+    <div class="s-ic">
+      <span class="s-num">08</span>
+      <div class="s-svgbox">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="13" stroke="#ff7a2f" stroke-width="1.5" fill="rgba(0,229,192,0.15)"/>
+          <text x="17" y="21" text-anchor="middle" font-size="11" fill="#ff7a2f" font-family="Orbitron,sans-serif" font-weight="900">08</text>
+        </svg>
+      </div>
+    </div>
+    <div class="s-tc">
+      <div class="s-tag">08 — Saídas e atuação</div>
+      <h3>Saídas e Atuadores</h3>
+      <div class="s-sub">Buzzer · Motor DC/Servo/Passo · LCD 16×2 · OLED 128×64</div>
+      <div class="s-bgs">
+        <span class="badge b-med">Intermediário</span>
+        <span class="badge b-c2">R$5–60,00</span>
+      </div>
+    </div>
+    <div class="s-add">
+      <button class="btn-add" onclick="addItem('card-8','Saídas e Atuadores','#ff7a2f',this)">+ Adicionar</button>
+    </div>
+  </div>
+  <div class="s-tabs">
+    <div class="stab on" onclick="swTab(this,'card-8-t1')">📖 Descrição</div>
+    <div class="stab" onclick="swTab(this,'card-8-t2')">🔌 Como Ligar</div>
+    <div class="stab" onclick="swTab(this,'card-8-t3')">🧮 Calculadora</div>
+  </div>
+  <div class="tp show" id="card-8-t1">
+    <p class="s-desc">Atuadores transformam sinal elétrico em ação no mundo físico. <strong>Buzzer ativo</strong>: só aplicar tensão. <strong>Buzzer passivo</strong>: use <code>tone(pino, 440)</code> para escolher frequência. <strong>Servo</strong>: posicionamento 0–180° com Servo.h, sem driver extra. <strong>Motor DC</strong>: velocidade por PWM e direção via L298N. <strong>OLED I²C</strong>: gráficos vetoriais e texto com apenas SDA+SCL.</p>
+    <div class="fbox">Servo: pulso 1ms=0° · 1.5ms=90° · 2ms=180° @ 50Hz<small>Motor DC via L298N (PWM+direção) · OLED I²C: SDA+SCL = só 2 fios de sinal</small></div>
+    <div class="tp2">
+      <div class="tpb"><div class="tpbt">🔧 Principais usos</div><ul><li>Alertas sonoros e músicas (buzzer passivo)</li><li>Rodas, hélices e esteiras (motor DC)</li><li>Exibir dados de sensores em tempo real</li><li>Posicionar braços robóticos com servo</li></ul></div>
+      <div class="tpb"><div class="tpbt">⚠️ Quando precisar</div><ul><li>Projeto com feedback sonoro ou visual</li><li>Robótica com movimentação de membros</li><li>Interface para o usuário ver dados ao vivo</li><li>Controle de posição preciso (0.5° servo)</li></ul></div>
+    </div>
+    <div class="prow"><span class="pb">Robótica</span><span class="pb">Drone FPV</span><span class="pb">Relógio OLED</span><span class="pb">Alarme sonoro</span><span class="pb">Braço robótico</span><span class="pb">Piano Arduino</span></div>
+  </div>
+  <div class="tp" id="card-8-t2">
+    <div class="wr" id="wsvg-08">
+      <div class="wrt">🔌 Diagrama de ligação</div>
+      <div class="wsteps"><div class="ws"><span class="wsn">01</span><span>Buzzer ativo: pino+ ao digital, pino− ao GND. digitalWrite(pin, HIGH) aciona.</span></div><div class="ws"><span class="wsn">02</span><span>Buzzer passivo: tone(pino, 440, 500) toca Lá4 (440Hz) por 500ms. noTone() para.</span></div><div class="ws"><span class="wsn">03</span><span>Servo: marrom=GND, vermelho=5V, laranja=sinal. myServo.write(90) → 90°.</span></div><div class="ws"><span class="wsn">04</span><span>Motor DC + L298N: IN1+IN2=direção; ENA+PWM=velocidade. Alimentação separada.</span></div></div>
+    </div>
+  </div>
+  <div class="tp" id="card-8-t3">
+    <div class="calc-holder" id="calc-servo"></div>
+  </div>
+  <div class="ct-track" data-wiki="Buzzer,Servomotor,OLED_display" data-caps="Buzzer piezoelétrico,Servo motor,Display OLED"></div>
+</div></div>
+  </main>
+</div>
+
+<hr class="dv">
+
+<section id="finder-sec" style="max-width:880px;margin:0 auto;padding:0 1.5rem">
+  <div class="sh reveal">
+    <div class="sl">◈ Assistente inteligente</div>
+    <h2 class="st">O que meu projeto precisa?</h2>
+    <p class="ss">3 passos: tipo de projeto → funcionalidades → lista de componentes com dicas práticas de código.</p>
+  </div>
+  <div class="fw reveal">
+    <div class="fc">
+      <div class="fhd">
+        <h2>⚡ Assistente de componentes</h2>
+        <p>Selecione o tipo de projeto e as funcionalidades desejadas. A lista monta sozinha com prioridade, dica de código Arduino e link direto para o guia.</p>
+      </div>
+      <div class="fsteps">
+        <div class="fst on" id="fs1" onclick="gst(1)"><span class="fsn">PASSO 1</span>Tipo de projeto</div>
+        <div class="fst" id="fs2" onclick="gst(2)"><span class="fsn">PASSO 2</span>Funcionalidades</div>
+        <div class="fst" id="fs3" onclick="gst(3)"><span class="fsn">PASSO 3</span>Resultado</div>
+      </div>
+      <div class="fp show" id="p1">
+        <p style="color:var(--dim);font-size:.81rem;margin-bottom:1rem">Escolha a categoria do seu projeto:</p>
+        <div class="pcats">
+          <div class="pcat" data-cat="iniciante" onclick="sc2(this)"><div class="pci">🔰</div><div class="pcn">Iniciante</div><div class="pch">Primeiro contato com Arduino</div></div>
+          <div class="pcat" data-cat="automacao" onclick="sc2(this)"><div class="pci">🏠</div><div class="pcn">Automação Residencial</div><div class="pch">Lâmpadas, cortinas, clima</div></div>
+          <div class="pcat" data-cat="robotica" onclick="sc2(this)"><div class="pci">🤖</div><div class="pcn">Robótica</div><div class="pch">Robô autônomo, braço mecânico</div></div>
+          <div class="pcat" data-cat="sensor" onclick="sc2(this)"><div class="pci">📡</div><div class="pcn">Monitoramento IoT</div><div class="pch">Estação meteorológica, sensores</div></div>
+          <div class="pcat" data-cat="audio" onclick="sc2(this)"><div class="pci">🎵</div><div class="pcn">Áudio / Piano</div><div class="pch">Amplificadores, efeitos, piano</div></div>
+          <div class="pcat" data-cat="display" onclick="sc2(this)"><div class="pci">📺</div><div class="pcn">Painel / Display</div><div class="pch">Relógio, termômetro, interface</div></div>
+          <div class="pcat" data-cat="energia" onclick="sc2(this)"><div class="pci">⚡</div><div class="pcn">Fonte / Energia</div><div class="pch">Fonte regulada, carregador</div></div>
+          <div class="pcat" data-cat="seguranca" onclick="sc2(this)"><div class="pci">🔒</div><div class="pcn">Segurança / Alarme</div><div class="pch">Alarme, detector, controle</div></div>
+        </div>
+      </div>
+      <div class="fp" id="p2">
+        <p style="color:var(--dim);font-size:.81rem;margin-bottom:1rem">Marque tudo que seu projeto deve fazer:</p>
+        <div class="flist" id="flist"></div>
+      </div>
+      <div class="fp" id="p3"><div id="rarea"><div style="text-align:center;padding:2.5rem;color:var(--dim)">Complete o passo 2 para ver sua lista</div></div></div>
+      <div class="fnav">
+        <button class="btn btn-o" id="bprev" onclick="pst()" style="display:none">← Anterior</button>
+        <div class="fni" id="fni">Selecione o tipo de projeto</div>
+        <button class="btn btn-p" id="bnext" onclick="nst()" disabled>Próximo →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="dv" style="margin-top:2rem">
+
+<section id="ref-sec" style="max-width:980px;margin:0 auto;padding:0 1.5rem">
+  <div class="sh reveal">
+    <div class="sl">◈ Tabela de referência</div>
+    <h2 class="st">Resumo Rápido</h2>
+    <p class="ss">19 componentes: função, unidade, alerta crítico e projetos típicos.</p>
+  </div>
+  <div style="padding-bottom:5rem" class="reveal">
+    <table class="rt">
+      <thead><tr><th>Componente</th><th>Função</th><th>Unidade</th><th>⚠️ Atenção crítica</th><th>Projetos</th></tr></thead>
+      <tbody>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#00e5c0"></div>Resistor</div></td><td>Limita corrente elétrica</td><td>Ω · kΩ · MΩ</td><td>Faixas coloridas = valor exato; P=I²R watts</td><td>Todo circuito</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ffb800"></div>Cap. eletrolítico</div></td><td>Armazena energia / filtra</td><td>µF</td><td>POLARIDADE! Nunca inverta — explode</td><td>Fonte, timer</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ffb800"></div>Cap. cerâmico</div></td><td>Bypass / desacoplamento</td><td>nF · pF</td><td>Sem polaridade · 100nF por CI</td><td>Bypass CIs</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff4e7e"></div>LED</div></td><td>Emite luz visível</td><td>Vf (V), mcd</td><td>SEMPRE resistor em série! Queima sem ele</td><td>Indicadores</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#b97dff"></div>Transistor BJT</div></td><td>Amplifica / chave</td><td>hFE, Ic (mA)</td><td>NPN: base HIGH para ligar; sem pull-down = flutua</td><td>Robótica</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#b97dff"></div>MOSFET</div></td><td>Chave de alta eficiência</td><td>Vgs, Rds(on)</td><td>Gate sensível a descarga ESD</td><td>Motor PWM</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#b97dff"></div>Relé</div></td><td>Isola e comuta cargas</td><td>A (corrente)</td><td>Diodo 1N4007 na bobina! Sem ele = pico destroe transistor</td><td>Automação</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#8fff4e"></div>Protoboard</div></td><td>Montagem sem solda</td><td>400 / 830 pts</td><td>Máx. 1A por trilha interna</td><td>Prototipagem</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#4ea8ff"></div>Push Button</div></td><td>Entrada digital</td><td>NO / NC</td><td>INPUT_PULLUP ou pull-down 10kΩ obrigatório</td><td>Controle</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#4ea8ff"></div>Potenciômetro</div></td><td>Entrada analógica</td><td>kΩ lin/log</td><td>3 terminais: Vcc · cursor · GND — na ordem certa!</td><td>Volume, vel.</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#00cfff"></div>LDR</div></td><td>Detecta luminosidade</td><td>kΩ variável</td><td>Monte em divisor com 10kΩ para leitura analógica</td><td>Auto-ilum.</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#00cfff"></div>DHT22</div></td><td>Temperatura + umidade</td><td>°C, %RH</td><td>Pull-up 4.7kΩ no data; leitura a cada 2s mínimo</td><td>Clima IoT</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#00cfff"></div>HC-SR04</div></td><td>Distância por ultrassom</td><td>cm (2–400)</td><td>VCC=5V obrigatório; trig=10µs HIGH</td><td>Robô</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#00cfff"></div>Sensor PIR</div></td><td>Detecta presença IR</td><td>m (alcance)</td><td>30–60s warm-up; ajuste trimpot antes de usar</td><td>Alarme</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff7a2f"></div>Buzzer ativo</div></td><td>Som de frequência fixa</td><td>V, dB</td><td>Só aplicar tensão — tom interno fixo</td><td>Alertas</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff7a2f"></div>Buzzer passivo</div></td><td>Som de frequência variável</td><td>Hz, dB</td><td>tone(pino, freq, dur) no Arduino para melodias</td><td>Músicas</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff7a2f"></div>Motor DC</div></td><td>Rotação contínua</td><td>RPM, V, A</td><td>Driver L298N obrigatório — pino não aguenta</td><td>Rodas, drones</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff7a2f"></div>Servo Motor</div></td><td>Posição angular precisa</td><td>° (0–180)</td><td>PWM 50Hz; fonte externa para mais de 2 servos</td><td>Braço robótico</td></tr>
+        <tr><td><div class="rn2"><div class="rdot" style="background:#ff7a2f"></div>Display OLED I²C</div></td><td>Exibe texto e gráficos</td><td>px (128×64)</td><td>Biblioteca Adafruit SSD1306 + GFX obrigatória</td><td>Interface</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="cdraw" id="cdraw">
+  <div class="cdh" onclick="togCart()">
+    <span class="cdht">🛒 Lista do Projeto</span>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span class="cdhc" id="cdhc">0 itens</span>
+      <span class="cdch">▲</span>
+    </div>
+  </div>
+  <div class="cdb">
+    <div class="cde" id="cde">Clique em "Adicionar" nos cards<br>para montar sua lista de compras.</div>
+    <div id="citems"></div>
+    <div class="cdact" id="cdact" style="display:none">
+      <button class="btn-exp" onclick="expCart()">📋 Copiar lista</button>
+      <button class="btn-clr" onclick="clrCart()">Limpar tudo</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>⚡ <strong>ElectroGuia</strong> — Guia interativo de componentes eletrônicos</p>
+  <p style="opacity:.4;font-size:.74rem;margin-top:.3rem">Calculadoras interativas · Diagramas SVG · Fotos via Wikipedia CC · Para makers, estudantes e entusiastas</p>
+</footer>
+
+<script>
+// ── HERO CANVAS CIRCUIT ──
+(function(){
+  var cv=document.getElementById('hcv'),ctx=cv.getContext('2d'),W,H,N,E;
+  function rs(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;
+    N=[];for(var i=0;i<45;i++)N.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,p:Math.random()*Math.PI*2});
+    E=[];N.forEach(function(n,i){N.slice(i+1).forEach(function(m,j){if(Math.hypot(n.x-m.x,n.y-m.y)<175)E.push({a:i,b:i+1+j,s:Math.random()*Math.PI*2})})});}
+  function draw(){ctx.clearRect(0,0,W,H);
+    E.forEach(function(e){var a=N[e.a],b=N[e.b];e.s+=.007;var al=.035+.055*Math.sin(e.s);ctx.strokeStyle='rgba(0,229,192,'+al+')';ctx.lineWidth=.75;ctx.beginPath();ctx.moveTo(a.x,a.y);var mx=(a.x+b.x)/2;ctx.lineTo(mx,a.y);ctx.lineTo(mx,b.y);ctx.lineTo(b.x,b.y);ctx.stroke();});
+    N.forEach(function(n){n.x+=n.vx;n.y+=n.vy;n.p+=.022;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;var al=.22+.32*Math.sin(n.p);ctx.fillStyle='rgba(0,229,192,'+al+')';ctx.beginPath();ctx.arc(n.x,n.y,1.6+.8*Math.sin(n.p),0,Math.PI*2);ctx.fill();});
+    requestAnimationFrame(draw);}
+  window.addEventListener('resize',rs);rs();draw();
+})();
+
+// ── PROGRESS BAR + REVEAL ──
+function revAll(){document.querySelectorAll('.reveal:not(.in)').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight+80)el.classList.add('in')});}
+var rO=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting||x.boundingClientRect.top<0){x.target.classList.add('in');rO.unobserve(x.target);}});},{threshold:0,rootMargin:'0px 0px -15px 0px'});
+document.querySelectorAll('.reveal').forEach(function(r){rO.observe(r)});revAll();
+window.addEventListener('scroll',function(){var d=document.documentElement;document.getElementById('pfill').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';revAll();},{passive:true});
+
+// ── NAV + SIDEBAR ACTIVE ──
+window.addEventListener('scroll',function(){
+  var cur='',sc=window.scrollY;
+  document.querySelectorAll('section[id],header[id],div[id^="card-"]').forEach(function(s){if(sc>=s.offsetTop-110)cur=s.id;});
+  document.querySelectorAll('[data-nav]').forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+  document.querySelectorAll('[data-sb]').forEach(function(a){a.classList.toggle('on',a.dataset.sb===cur.replace('card-',''));});
+  document.querySelectorAll('.hchips .chip').forEach(function(c){var s=c.querySelector('span');if(s&&cur==='card-'+s.textContent.trim())c.classList.add('on');else c.classList.remove('on');});
+},{passive:true});
+function scrollTo2(n){var el=document.getElementById('card-'+n);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+
+// ── TABS ──
+function swTab(btn,pid){
+  var s=btn.closest('.strip');
+  s.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on')});
+  s.querySelectorAll('.tp').forEach(function(p){p.classList.remove('show')});
+  btn.classList.add('on');document.getElementById(pid).classList.add('show');
+  initCalcs();
+}
+
+// ── PHOTOS ──
+var pO=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting&&!x.target.dataset.loaded){x.target.dataset.loaded='1';loadPics(x.target);}});},{threshold:0,rootMargin:'300px'});
+document.querySelectorAll('.ct-track').forEach(function(c){pO.observe(c)});
+function loadPics(ct){
+  var pages=ct.dataset.wiki.split(','),caps=ct.dataset.caps.split(',');
+  pages.forEach(function(_,i){var c=document.createElement('div');c.className='pc';c.innerHTML='<div class="sk"></div>';ct.appendChild(c);});
+  var cells=ct.querySelectorAll('.pc');
+  pages.forEach(function(pg,i){
+    fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(pg.trim()),{headers:{'Api-User-Agent':'ElectroGuia/3.0'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d.thumbnail||!d.thumbnail.source){cells[i].style.display='none';return;}
+      var img=document.createElement('img');img.alt=caps[i]||pg;img.loading='lazy';
+      img.onload=function(){img.classList.add('ld');cells[i].classList.add('ok');};
+      img.onerror=function(){cells[i].style.display='none';};
+      img.src=d.thumbnail.source;
+      var ov=document.createElement('div');ov.className='ov';ov.innerHTML='<span>'+(caps[i]||pg)+'</span>';
+      cells[i].appendChild(img);cells[i].appendChild(ov);
+    })
+    .catch(function(){cells[i].style.display='none';});
+  });
+}
+
+// ── INLINE SVG WIRING DIAGRAMS ──
+var SVGS = {
+"01":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='35' width='78' height='50' rx='7' fill='#0d1626' stroke='#00e5c0' stroke-width='1.5'/><text x='43' y='58' font-family='Orbitron,monospace' font-size='7' fill='#00e5c0' text-anchor='middle'>ARDUINO</text><text x='43' y='71' font-family='Exo 2,sans-serif' font-size='6' fill='#5a7898' text-anchor='middle'>5V · D13 · GND</text><line x1='82' y1='50' x2='158' y2='50' stroke='#e44' stroke-width='1.5' stroke-dasharray='4 2'/><rect x='158' y='42' width='46' height='16' rx='3' fill='#0d1626' stroke='#00e5c0' stroke-width='1.5'/><text x='181' y='53' font-family='Orbitron,monospace' font-size='7' fill='#00e5c0' text-anchor='middle'>R</text><line x1='204' y1='50' x2='262' y2='50' stroke='#e44' stroke-width='1.5' stroke-dasharray='4 2'/><polygon points='262,43 262,57 277,50' fill='rgba(255,78,126,.2)' stroke='#ff4e7e' stroke-width='1.8'/><line x1='278' y1='44' x2='278' y2='56' stroke='#ff4e7e' stroke-width='2.2'/><line x1='278' y1='50' x2='320' y2='50' stroke='#666' stroke-width='1.5' stroke-dasharray='4 2'/><line x1='82' y1='70' x2='320' y2='70' stroke='#666' stroke-width='1.5' stroke-dasharray='4 2'/><line x1='320' y1='50' x2='320' y2='70' stroke='#666' stroke-width='1.5'/><rect x='330' y='38' width='140' height='40' rx='5' fill='rgba(0,229,192,.04)' stroke='#00e5c0' stroke-width='.8'/><text x='400' y='55' font-family='Exo 2,sans-serif' font-size='8' fill='#00e5c0' text-anchor='middle'>R = (Vcc − Vf) ÷ If</text><text x='400' y='68' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>(5−2) ÷ 0.02 = 150Ω</text></svg>",
+"02":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='25' width='78' height='70' rx='7' fill='#0d1626' stroke='#ffb800' stroke-width='1.5'/><text x='43' y='58' font-family='Orbitron,monospace' font-size='7' fill='#ffb800' text-anchor='middle'>FONTE DC</text><text x='43' y='71' font-family='Exo 2,sans-serif' font-size='6' fill='#5a7898' text-anchor='middle'>+5V · GND</text><line x1='82' y1='45' x2='196' y2='45' stroke='#e44' stroke-width='1.5' stroke-dasharray='4 2'/><line x1='196' y1='25' x2='196' y2='95' stroke='#ffb800' stroke-width='3' stroke-linecap='round'/><line x1='213' y1='25' x2='213' y2='95' stroke='#ffb800' stroke-width='3' stroke-linecap='round'/><text x='204' y='112' font-family='Orbitron,monospace' font-size='7' fill='#ffb800' text-anchor='middle'>C</text><line x1='213' y1='45' x2='306' y2='45' stroke='#e44' stroke-width='1.5' stroke-dasharray='4 2'/><rect x='306' y='25' width='78' height='70' rx='7' fill='#0d1626' stroke='#5a7898' stroke-width='1' stroke-dasharray='3 2'/><text x='345' y='63' font-family='Exo 2,sans-serif' font-size='8' fill='#5a7898' text-anchor='middle'>CARGA</text><line x1='82' y1='85' x2='306' y2='85' stroke='#666' stroke-width='1.5' stroke-dasharray='4 2'/><text x='420' y='45' font-family='Orbitron,monospace' font-size='7' fill='#ffb800' text-anchor='middle'>bypass:</text><text x='420' y='57' font-family='Orbitron,monospace' font-size='7' fill='#ffb800' text-anchor='middle'>100nF</text><text x='420' y='69' font-family='Exo 2,sans-serif' font-size='7' fill='#5a7898' text-anchor='middle'>próx. ao CI</text></svg>",
+"03":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='35' width='78' height='50' rx='7' fill='#0d1626' stroke='#ff4e7e' stroke-width='1.5'/><text x='43' y='58' font-family='Orbitron,monospace' font-size='7' fill='#ff4e7e' text-anchor='middle'>ARDUINO</text><text x='43' y='71' font-family='Exo 2,sans-serif' font-size='6' fill='#5a7898' text-anchor='middle'>D9 · GND</text><line x1='82' y1='50' x2='148' y2='50' stroke='yellow' stroke-width='1.5' stroke-dasharray='4 2'/><rect x='148' y='42' width='44' height='16' rx='3' fill='#0d1626' stroke='#ff4e7e' stroke-width='1.5'/><text x='170' y='53' font-family='Orbitron,monospace' font-size='7' fill='#ff4e7e' text-anchor='middle'>220Ω</text><line x1='192' y1='50' x2='236' y2='50' stroke='yellow' stroke-width='1.5' stroke-dasharray='4 2'/><polygon points='236,43 236,57 251,50' fill='rgba(255,78,126,.2)' stroke='#ff4e7e' stroke-width='2'/><line x1='252' y1='44' x2='252' y2='56' stroke='#ff4e7e' stroke-width='2.5'/><circle cx='244' cy='50' r='10' fill='none' stroke='#ff4e7e' stroke-width='.8' stroke-opacity='.35'/><line x1='252' y1='50' x2='306' y2='50' stroke='#666' stroke-width='1.5' stroke-dasharray='4 2'/><line x1='82' y1='70' x2='306' y2='70' stroke='#666' stroke-width='1.5' stroke-dasharray='4 2'/><line x1='306' y1='50' x2='306' y2='70' stroke='#666' stroke-width='1.5'/><text x='385' y='50' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>ânodo (+) = perna maior</text><text x='385' y='63' font-family='Orbitron,monospace' font-size='7' fill='#ff4e7e' text-anchor='middle'>R=(Vcc−Vf)÷If</text><text x='385' y='76' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>(5−2)÷0.02 = 150Ω</text></svg>",
+"04":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='28' width='70' height='64' rx='7' fill='#0d1626' stroke='#b97dff' stroke-width='1.5'/><text x='39' y='58' font-family='Orbitron,monospace' font-size='6.5' fill='#b97dff' text-anchor='middle'>ARDUINO</text><text x='39' y='71' font-family='Exo 2,sans-serif' font-size='5.5' fill='#5a7898' text-anchor='middle'>D7 · 5V · GND</text><line x1='74' y1='48' x2='114' y2='48' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><rect x='114' y='40' width='38' height='16' rx='3' fill='#0d1626' stroke='#b97dff' stroke-width='1'/><text x='133' y='51' font-family='Orbitron,monospace' font-size='6' fill='#b97dff' text-anchor='middle'>1kΩ</text><line x1='152' y1='48' x2='178' y2='48' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><circle cx='190' cy='63' r='16' fill='#0d1626' stroke='#b97dff' stroke-width='1.5'/><text x='190' y='67' font-family='Orbitron,monospace' font-size='6.5' fill='#b97dff' text-anchor='middle'>NPN</text><line x1='178' y1='48' x2='184' y2='57' stroke='#b97dff' stroke-width='1.5'/><line x1='184' y1='57' x2='176' y2='71' stroke='#b97dff' stroke-width='1.5'/><line x1='184' y1='57' x2='206' y2='57' stroke='#b97dff' stroke-width='1.5'/><line x1='206' y1='40' x2='206' y2='76' stroke='#b97dff' stroke-width='1.5'/><line x1='206' y1='40' x2='258' y2='40' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><rect x='258' y='26' width='58' height='28' rx='5' fill='#0d1626' stroke='#b97dff' stroke-width='1.5'/><text x='287' y='40' font-family='Orbitron,monospace' font-size='6' fill='#b97dff' text-anchor='middle'>RELÉ</text><text x='287' y='50' font-family='Exo 2,sans-serif' font-size='6' fill='#5a7898' text-anchor='middle'>5V bobina</text><line x1='258' y1='54' x2='325' y2='54' stroke='#aaa' stroke-width='2' stroke-dasharray='5 3'/><text x='340' y='58' font-family='Exo 2,sans-serif' font-size='8' fill='#b97dff'>127V</text><line x1='176' y1='76' x2='176' y2='95' stroke='#666' stroke-width='1.5'/><line x1='74' y1='78' x2='176' y2='78' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><text x='287' y='105' font-family='Exo 2,sans-serif' font-size='7' fill='#5a7898' text-anchor='middle'>diodo 1N4007 antiparalelo na bobina</text></svg>",
+"05":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='32' y='16' width='166' height='88' rx='6' fill='#0d1626' stroke='#8fff4e' stroke-width='1.5'/><rect x='44' y='26' width='142' height='16' rx='3' fill='rgba(143,255,78,.07)' stroke='#8fff4e' stroke-width='1'/><text x='115' y='37' font-family='Exo 2,sans-serif' font-size='6.5' fill='#8fff4e' text-anchor='middle'>+ + + + + + + + + + + +</text><rect x='44' y='78' width='142' height='16' rx='3' fill='rgba(143,255,78,.07)' stroke='#5a7898' stroke-width='1'/><text x='115' y='89' font-family='Exo 2,sans-serif' font-size='6.5' fill='#5a7898' text-anchor='middle'>− − − − − − − − − − − −</text><rect x='54' y='48' width='122' height='24' rx='3' fill='#0d1626' stroke='#5a7898' stroke-width='1' stroke-dasharray='3 2'/><circle cx='74' cy='60' r='3' fill='#8fff4e' opacity='.75'/><circle cx='89' cy='60' r='3' fill='#8fff4e' opacity='.75'/><circle cx='104' cy='60' r='3' fill='#8fff4e' opacity='.75'/><circle cx='119' cy='60' r='3' fill='#8fff4e' opacity='.75'/><circle cx='134' cy='60' r='3' fill='#8fff4e' opacity='.75'/><circle cx='149' cy='60' r='3' fill='#8fff4e' opacity='.75'/><text x='115' y='115' font-family='Exo 2,sans-serif' font-size='7' fill='#5a7898' text-anchor='middle'>grupos de 5 furos conectados por linha</text><rect x='276' y='36' width='72' height='48' rx='6' fill='#0d1626' stroke='#4ea8ff' stroke-width='1.5'/><text x='312' y='62' font-family='Orbitron,monospace' font-size='7' fill='#4ea8ff' text-anchor='middle'>ARDUINO</text><line x1='198' y1='35' x2='276' y2='50' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='198' y1='85' x2='276' y2='70' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><text x='390' y='58' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>vm=Vcc px=GND am=sinal</text></svg>",
+"06":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='30' width='72' height='60' rx='7' fill='#0d1626' stroke='#4ea8ff' stroke-width='1.5'/><text x='40' y='58' font-family='Orbitron,monospace' font-size='6.5' fill='#4ea8ff' text-anchor='middle'>ARDUINO</text><text x='40' y='71' font-family='Exo 2,sans-serif' font-size='5.5' fill='#5a7898' text-anchor='middle'>A0 · D2 · 5V · GND</text><rect x='116' y='31' width='34' height='28' rx='4' fill='#0d1626' stroke='#4ea8ff' stroke-width='1.5'/><rect x='123' y='21' width='20' height='10' rx='2' fill='#4ea8ff' opacity='.3'/><text x='133' y='48' font-family='Orbitron,monospace' font-size='5.5' fill='#4ea8ff' text-anchor='middle'>BTN</text><line x1='76' y1='53' x2='116' y2='47' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='150' y1='43' x2='174' y2='43' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='174' y1='33' x2='174' y2='83' stroke='#5a7898' stroke-width='1.5'/><line x1='133' y1='59' x2='133' y2='83' stroke='#666' stroke-width='1.5'/><circle cx='232' cy='68' r='18' fill='#0d1626' stroke='#4ea8ff' stroke-width='1.5'/><circle cx='232' cy='68' r='6.5' fill='#0d1626' stroke='#4ea8ff' stroke-width='1.2'/><line x1='232' y1='61' x2='238' y2='53' stroke='#4ea8ff' stroke-width='2' stroke-linecap='round'/><text x='232' y='99' font-family='Orbitron,monospace' font-size='6.5' fill='#4ea8ff' text-anchor='middle'>POT</text><line x1='76' y1='72' x2='214' y2='68' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='250' y1='68' x2='296' y2='68' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='232' y1='50' x2='232' y2='35' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='174' y1='83' x2='76' y2='83' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><text x='390' y='55' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>INPUT_PULLUP</text><text x='390' y='68' font-family='Orbitron,monospace' font-size='7' fill='#4ea8ff' text-anchor='middle'>LOW=pressionado</text><text x='390' y='81' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>analogRead 0–1023</text></svg>",
+"07":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='30' width='72' height='60' rx='7' fill='#0d1626' stroke='#00cfff' stroke-width='1.5'/><text x='40' y='57' font-family='Orbitron,monospace' font-size='6.5' fill='#00cfff' text-anchor='middle'>ARDUINO</text><text x='40' y='70' font-family='Exo 2,sans-serif' font-size='5.5' fill='#5a7898' text-anchor='middle'>5V · GND · A0 · D2</text><circle cx='155' cy='65' r='19' fill='#0d1626' stroke='#00cfff' stroke-width='1.5'/><path d='M143 58 Q155 50 167 58' stroke='#00cfff' stroke-width='1.2' fill='none' opacity='.6'/><line x1='146' y1='52' x2='142' y2='45' stroke='#00cfff' stroke-width='1.2' stroke-linecap='round' opacity='.7'/><line x1='155' y1='50' x2='155' y2='43' stroke='#00cfff' stroke-width='1.2' stroke-linecap='round' opacity='.7'/><line x1='164' y1='52' x2='168' y2='45' stroke='#00cfff' stroke-width='1.2' stroke-linecap='round' opacity='.7'/><text x='155' y='95' font-family='Orbitron,monospace' font-size='6.5' fill='#00cfff' text-anchor='middle'>LDR</text><line x1='76' y1='50' x2='136' y2='57' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='174' y1='57' x2='214' y2='46' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><rect x='214' y='38' width='38' height='16' rx='3' fill='#0d1626' stroke='#5a7898' stroke-width='1'/><text x='233' y='49' font-family='Orbitron,monospace' font-size='6' fill='#5a7898' text-anchor='middle'>10kΩ</text><line x1='252' y1='46' x2='296' y2='46' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><text x='308' y='50' font-family='Exo 2,sans-serif' font-size='8' fill='#00cfff'>A0</text><line x1='296' y1='46' x2='296' y2='78' stroke='#666' stroke-width='1.5'/><line x1='296' y1='78' x2='76' y2='78' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><text x='390' y='55' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>alto=escuro · baixo=claro</text><text x='390' y='68' font-family='Orbitron,monospace' font-size='7' fill='#00cfff' text-anchor='middle'>divisor com 10kΩ</text></svg>",
+"08":"<svg class='wdiag' viewBox='0 0 480 120' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='25' width='72' height='70' rx='7' fill='#0d1626' stroke='#ff7a2f' stroke-width='1.5'/><text x='40' y='57' font-family='Orbitron,monospace' font-size='6.5' fill='#ff7a2f' text-anchor='middle'>ARDUINO</text><text x='40' y='70' font-family='Exo 2,sans-serif' font-size='5.5' fill='#5a7898' text-anchor='middle'>D9 · D10 · 5V · GND</text><ellipse cx='155' cy='65' rx='13' ry='19' fill='#0d1626' stroke='#ff7a2f' stroke-width='1.5'/><line x1='150' y1='57' x2='145' y2='50' stroke='#ff7a2f' stroke-width='1.5' stroke-linecap='round' opacity='.5'/><line x1='160' y1='57' x2='165' y2='50' stroke='#ff7a2f' stroke-width='1.5' stroke-linecap='round' opacity='.5'/><text x='155' y='99' font-family='Orbitron,monospace' font-size='6' fill='#ff7a2f' text-anchor='middle'>BUZZER</text><circle cx='275' cy='76' r='21' fill='#0d1626' stroke='#ff7a2f' stroke-width='1.5'/><circle cx='275' cy='76' r='7.5' fill='#0d1626' stroke='#ff7a2f' stroke-width='1.2'/><line x1='275' y1='68' x2='281' y2='58' stroke='#ff7a2f' stroke-width='2' stroke-linecap='round'/><text x='275' y='112' font-family='Orbitron,monospace' font-size='6' fill='#ff7a2f' text-anchor='middle'>SERVO</text><line x1='76' y1='45' x2='142' y2='57' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='168' y1='57' x2='254' y2='68' stroke='yellow' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='76' y1='67' x2='142' y2='72' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='168' y1='72' x2='254' y2='74' stroke='#e44' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='76' y1='83' x2='142' y2='80' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><line x1='168' y1='80' x2='254' y2='78' stroke='#666' stroke-width='1.5' stroke-dasharray='3 2'/><text x='390' y='52' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>tone(pin, 440)</text><text x='390' y='64' font-family='Orbitron,monospace' font-size='7' fill='#ff7a2f' text-anchor='middle'>servo.write(90)</text><text x='390' y='76' font-family='Exo 2,sans-serif' font-size='7.5' fill='#5a7898' text-anchor='middle'>Motor → L298N driver</text></svg>"
+};
+document.querySelectorAll('[id^="wsvg-"]').forEach(function(el){
+  var id=el.id.replace('wsvg-','');if(SVGS[id]){el.insertAdjacentHTML('afterbegin',SVGS[id]);}
+});
+
+// ── CALCULATORS ──
+var CALCS = {
+resistor:'<div class="cw"><div class="cwt">🧮 Resistor para LED</div><div class="cg"><div class="cf"><label>Tensão da fonte (Vcc)</label><select id="r-vcc" onchange="calcR()"><option value="3.3">3.3V (ESP32)</option><option value="5" selected>5V (Arduino)</option><option value="9">9V</option><option value="12">12V</option></select></div><div class="cf"><label>Tensão do LED (Vf)</label><select id="r-vf" onchange="calcR()"><option value="1.8">1.8V — Vermelho/Amarelo</option><option value="2.0" selected>2.0V — Verde</option><option value="3.2">3.2V — Azul/Branco</option><option value="3.4">3.4V — UV</option></select></div><div class="cf"><label>Corrente (If)</label><select id="r-if" onchange="calcR()"><option value="5">5mA — muito fraco</option><option value="10">10mA — fraco</option><option value="20" selected>20mA — normal</option><option value="30">30mA — brilhante</option></select></div></div><div class="cr" id="r-res"><span class="crv" id="r-val">—</span><span class="crl">Ω exatos</span><span class="crv" id="r-std">—</span><span class="crl">Ω padrão E24</span><div class="crs" id="r-sub"></div></div><div class="ch">Use sempre o <strong>valor padrão</strong> — nunca menor que o calculado.</div></div>',
+capacitor:'<div class="cw"><div class="cwt">🧮 Constante de Tempo RC</div><div class="cg"><div class="cf"><label>Resistência R (Ω)</label><input id="cap-r" type="number" value="10000" min="1" oninput="calcRC()"></div><div class="cf"><label>Capacitância C (µF)</label><input id="cap-c" type="number" value="100" min="0.001" step="0.001" oninput="calcRC()"></div></div><div class="cr" id="cap-res"><span class="crv" id="cap-tau">—</span><span class="crl">τ (tau)</span><div class="crs" id="cap-sub"></div></div><div class="ch">Em 1τ → 63% carregado · Em 5τ → 99%</div></div>',
+led:'<div class="cw"><div class="cwt">🧮 LED: Resistor + Potência</div><div class="cg"><div class="cf"><label>Vcc (V)</label><input id="led-vcc" type="number" value="5" min="1" max="24" step=".1" oninput="calcLed()"></div><div class="cf"><label>Vf do LED (V)</label><input id="led-vf" type="number" value="2.0" min=".5" max="4" step=".1" oninput="calcLed()"></div><div class="cf"><label>If (mA)</label><input id="led-if" type="number" value="20" min="1" max="100" oninput="calcLed()"></div></div><div class="cr" id="led-res"><span class="crv" id="led-r">—</span><span class="crl">Ω mínimos</span><span class="crv" id="led-p">—</span><span class="crl">mW no R</span><div class="crs" id="led-sub"></div></div></div>',
+transistor:'<div class="cw"><div class="cwt">🧮 Resistor de Base NPN (chave)</div><div class="cg"><div class="cf"><label>Tensão do sinal (Vin)</label><input id="tr-vin" type="number" value="5" min="1" max="12" step=".1" oninput="calcTr()"></div><div class="cf"><label>Corrente da carga (mA)</label><input id="tr-ic" type="number" value="100" min="1" oninput="calcTr()"></div><div class="cf"><label>Ganho hFE</label><select id="tr-hfe" onchange="calcTr()"><option value="100">100 — BC547</option><option value="200">200 — BC548</option><option value="50">50 — 2N2222</option><option value="30">30 — BD135</option></select></div></div><div class="cr" id="tr-res"><span class="crv" id="tr-rb">—</span><span class="crl">Ω base</span><div class="crs" id="tr-sub"></div></div><div class="ch">Rb = (Vin−0.7V) ÷ Ib_sat · Ib_sat = Ic ÷ (hFE/10)</div></div>',
+proto:'<div class="cw"><div class="cwt">📋 Guia da Protoboard</div><div class="tp2"><div class="tpb"><div class="tpbt">Estrutura interna</div><ul><li><strong>Barras +/−:</strong> alimentação contínua nas bordas</li><li><strong>Centro:</strong> grupos de 5 furos por linha horizontal</li><li><strong>Canal central:</strong> separa as metades (para CIs DIP)</li><li><strong>830 pontos:</strong> tamanho ideal para projetos</li></ul></div><div class="tpb"><div class="tpbt">Cores de jumper</div><ul><li>🔴 Vermelho = Vcc (5V)</li><li>🟠 Laranja = 3.3V</li><li>⚫ Preto = GND</li><li>🟡 Amarelo = Sinal digital</li><li>🟢 Verde = SDA (I²C)</li><li>🔵 Azul = SCL (I²C)</li></ul></div></div></div>',
+analog:'<div class="cw"><div class="cwt">🧮 ADC: analogRead → Tensão</div><div class="cg"><div class="cf"><label>Leitura analogRead</label><input id="ad-raw" type="number" value="512" min="0" max="4095" oninput="calcADC()"></div><div class="cf"><label>Resolução ADC</label><select id="ad-bits" onchange="calcADC()"><option value="1023" selected>10-bit (Arduino Uno)</option><option value="4095">12-bit (ESP32)</option></select></div><div class="cf"><label>Referência Vcc</label><select id="ad-vcc" onchange="calcADC()"><option value="3.3">3.3V (ESP32)</option><option value="5" selected>5.0V (Arduino)</option></select></div></div><div class="cr" id="ad-res"><span class="crv" id="ad-v">—</span><span class="crl">Volts</span><span class="crv" id="ad-pct">—</span><span class="crl">%</span><div class="crs" id="ad-sub"></div></div></div>',
+sensor:'<div class="cw"><div class="cwt">🧮 HC-SR04: Echo → Distância</div><div class="cg"><div class="cf"><label>Tempo Echo (µs)</label><input id="s-echo" type="number" value="580" min="1" oninput="calcSensor()"></div><div class="cf"><label>Temperatura (°C)</label><input id="s-temp" type="number" value="25" min="-20" max="60" oninput="calcSensor()"></div></div><div class="cr" id="s-res"><span class="crv" id="s-dist">—</span><span class="crl">cm</span><span class="crv" id="s-m">—</span><span class="crl">metros</span><div class="crs" id="s-sub"></div></div><div class="ch">v = 331.4 + 0.6×T m/s · dist = (echo × v) ÷ 2</div></div>',
+servo:'<div class="cw"><div class="cwt">🧮 Pulso do Servo Motor</div><div class="cg"><div class="cf"><label>Ângulo desejado (°)</label><input id="sv-deg" type="range" min="0" max="180" value="90" oninput="calcServo()"><div id="sv-dv" style="text-align:center;color:var(--teal);font-family:Orbitron,monospace;font-size:.9rem;margin-top:.3rem">90°</div></div><div class="cf"><label>Tipo de servo</label><select id="sv-t" onchange="calcServo()"><option value="0.5,2.5">Padrão (0.5–2.5ms)</option><option value="1,2" selected>Comum (1–2ms)</option><option value="0.6,2.4">Hitec (0.6–2.4ms)</option></select></div></div><div class="cr" id="sv-res"><span class="crv" id="sv-pulse">—</span><span class="crl">ms pulso</span><span class="crv" id="sv-wr">—</span><span class="crl">servo.write()</span><div class="crs" id="sv-sub"></div></div></div>'
+};
+document.querySelectorAll('.calc-holder').forEach(function(el){
+  var id=el.id.replace('calc-','');if(CALCS[id])el.innerHTML=CALCS[id];
+});
+function fmtR(v){return v>=1e6?(v/1e6).toFixed(2)+'MΩ':v>=1e3?(v/1e3).toFixed(1)+'kΩ':Math.round(v)+'Ω';}
+function stdR(r){var s=[1,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2],m=[1,10,100,1e3,10e3,100e3,1e6],best=Infinity,bv=r;m.forEach(function(x){s.forEach(function(v){var d=Math.abs(v*x-r);if(d<best){best=d;bv=v*x;}});});return bv;}
+function g(id){return document.getElementById(id);}
+function calcR(){if(!g('r-vcc'))return;var v=+g('r-vcc').value,vf=+g('r-vf').value,If=+g('r-if').value/1000,r=(v-vf)/If,s=stdR(r);g('r-val').textContent=fmtR(r);g('r-std').textContent=fmtR(s);g('r-sub').textContent='Potência: '+((v-vf)*If*1000).toFixed(1)+'mW — resistor 1/4W (250mW) ok';}
+function calcRC(){if(!g('cap-r'))return;var R=+g('cap-r').value,C=+g('cap-c').value,tau=R*C/1000;g('cap-tau').textContent=tau<1?(tau*1000).toFixed(2)+'µs':tau<1000?tau.toFixed(2)+'ms':(tau/1000).toFixed(2)+'s';g('cap-sub').textContent='5τ='+((tau*5).toFixed(2))+'ms (99%) · fc='+(1/(2*Math.PI*R*C/1e6)).toFixed(1)+'Hz';}
+function calcLed(){if(!g('led-vcc'))return;var v=+g('led-vcc').value,vf=+g('led-vf').value,If=+g('led-if').value,r=(v-vf)/(If/1000),p=(v-vf)*(If/1000)*1000;g('led-r').textContent=fmtR(r);g('led-p').textContent=p.toFixed(1);g('led-sub').textContent='Padrão: '+fmtR(stdR(r))+' · '+(p<250?'1/4W ok':'use 1/2W!');}
+function calcTr(){if(!g('tr-vin'))return;var v=+g('tr-vin').value,ic=+g('tr-ic').value,hfe=+g('tr-hfe').value,ib=(ic/1000)/(hfe/10),rb=(v-0.7)/ib;g('tr-rb').textContent=fmtR(rb);g('tr-sub').textContent='Ib='+((ib*1000).toFixed(2))+'mA · padrão: '+fmtR(stdR(rb));}
+function calcSensor(){if(!g('s-echo'))return;var e=+g('s-echo').value,t=+g('s-temp').value,v=331.4+0.6*t,d=(e*v/1e6/2)*100;g('s-dist').textContent=d.toFixed(1);g('s-m').textContent=(d/100).toFixed(3);g('s-sub').textContent='Som a '+t+'°C: '+v.toFixed(1)+'m/s · máx HC-SR04: 400cm';}
+function calcServo(){if(!g('sv-deg'))return;var deg=+g('sv-deg').value;g('sv-dv').textContent=deg+'°';var parts=g('sv-t').value.split(','),mn=+parts[0],mx=+parts[1],p=mn+(mx-mn)*deg/180;g('sv-pulse').textContent=p.toFixed(3);g('sv-wr').textContent=Math.round(deg);g('sv-sub').textContent='myServo.write('+Math.round(deg)+') → '+p.toFixed(3)+'ms @ 50Hz';}
+function calcADC(){if(!g('ad-raw'))return;var r=+g('ad-raw').value,bits=+g('ad-bits').value,v=+g('ad-vcc').value,vout=r/bits*v;g('ad-v').textContent=vout.toFixed(3);g('ad-pct').textContent=(r/bits*100).toFixed(1);g('ad-sub').textContent=r+'/'+bits+' × '+v+'V = '+vout.toFixed(3)+'V';}
+function initCalcs(){setTimeout(function(){calcR();calcRC();calcLed();calcTr();calcSensor();calcServo();calcADC();},80);}
+window.addEventListener('DOMContentLoaded',initCalcs);
+
+// ── CART ──
+var cart=new Map();
+function addItem(id,name,color,btn){if(cart.has(id)){cart.delete(id);btn.classList.remove('done');btn.textContent='+ Adicionar';}else{cart.set(id,{name:name,color:color});btn.classList.add('done');btn.textContent='✓ Adicionado';}renderCart();}
+function renderCart(){var n=cart.size;g('cc').textContent=n;g('cc').classList.toggle('on',n>0);g('cdhc').textContent=n+' ite'+(n===1?'m':'ns');g('cde').style.display=n?'none':'block';g('cdact').style.display=n?'flex':'none';g('citems').innerHTML=[...cart.entries()].map(function(e){var id=e[0],v=e[1];return'<div class="cdi"><div class="cdid" style="background:'+v.color+'"></div><span class="cdin">'+v.name+'</span><span class="cdir" onclick="rmItem(''+id+'')">✕</span></div>';}).join('');}
+function rmItem(id){cart.delete(id);var b=document.querySelector('#'+id+' .btn-add');if(b){b.classList.remove('done');b.textContent='+ Adicionar';}renderCart();}
+var co=false;function togCart(){co=!co;g('cdraw').classList.toggle('open',co);}
+function clrCart(){cart.forEach(function(_,id){var b=document.querySelector('#'+id+' .btn-add');if(b){b.classList.remove('done');b.textContent='+ Adicionar';}});cart.clear();renderCart();}
+function expCart(){var t='Lista de Componentes — ElectroGuia
+
+'+[...cart.values()].map(function(c,i){return (i+1)+'. '+c.name;}).join('
+')+'
+
+ElectroGuia.dev';navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){alert('Lista copiada! ✓');});}
+
+// ── FINDER ──
+var FEATS={"iniciante": [{"id": "proto", "e": "🔧", "n": "Montar sem solda", "d": "Protoboard e jumpers para prototipagem", "c": ["protoboard", "resistor"]}, {"id": "led", "e": "💡", "n": "Acender LEDs", "d": "Indicadores visuais coloridos", "c": ["led", "resistor"]}, {"id": "button", "e": "🔘", "n": "Botão de controle", "d": "Push button para entrada digital", "c": ["button", "resistor"]}, {"id": "pot", "e": "🎚", "n": "Controle analógico", "d": "Potenciômetro para valores contínuos", "c": ["pot"]}, {"id": "display", "e": "📟", "n": "Display LCD/OLED", "d": "Exibir texto e dados", "c": ["display", "resistor"]}, {"id": "buzzer", "e": "🔔", "n": "Feedback sonoro", "d": "Buzzer para alertas e músicas", "c": ["buzzer"]}], "automacao": [{"id": "rele", "e": "🔌", "n": "Controlar 110/220V", "d": "Relé para lâmpadas e tomadas", "c": ["rele", "transistor"]}, {"id": "pir", "e": "👁", "n": "Detectar presença", "d": "PIR para acionamento automático", "c": ["sensor_pir"]}, {"id": "temp", "e": "🌡", "n": "Temperatura/umidade", "d": "DHT22 para climatização", "c": ["sensor_temp"]}, {"id": "ldr", "e": "☀", "n": "Luminosidade", "d": "LDR para acionar ao anoitecer", "c": ["ldr", "resistor"]}, {"id": "button", "e": "🔘", "n": "Botões de controle", "d": "Interruptores para o usuário", "c": ["button", "resistor"]}, {"id": "display", "e": "📟", "n": "Painel de status", "d": "Display para mostrar estado", "c": ["display"]}, {"id": "led", "e": "💡", "n": "Indicadores LED", "d": "Sinalizar estados do sistema", "c": ["led", "resistor"]}, {"id": "motor", "e": "⚙", "n": "Motor para persianas", "d": "Automatizar cortinas e portões", "c": ["motor", "transistor", "cap"]}], "robotica": [{"id": "motor", "e": "🛞", "n": "Motor DC (rodas)", "d": "Movimentar o robô", "c": ["motor", "transistor", "cap"]}, {"id": "servo", "e": "🦾", "n": "Servo (braço)", "d": "Posicionamento angular preciso", "c": ["servo", "cap"]}, {"id": "sonar", "e": "📡", "n": "Desvio de obstáculos", "d": "HC-SR04 para medir distância", "c": ["sensor_dist"]}, {"id": "ir", "e": "⬛", "n": "Sensor de linha", "d": "Seguidor de linha com LEDs IR", "c": ["led", "resistor", "transistor"]}, {"id": "button", "e": "🔘", "n": "Botões de controle", "d": "Iniciar e parar o robô", "c": ["button", "resistor"]}, {"id": "buzzer", "e": "🔔", "n": "Aviso sonoro", "d": "Buzzer para alertas", "c": ["buzzer"]}, {"id": "display", "e": "📟", "n": "Display de status", "d": "Exibir modo e leituras", "c": ["display"]}], "sensor": [{"id": "temp", "e": "🌡", "n": "Temperatura/umidade", "d": "DHT22 para estação meteorológica", "c": ["sensor_temp"]}, {"id": "ldr", "e": "☀", "n": "Luminosidade (LDR)", "d": "Índice de luz do ambiente", "c": ["ldr", "resistor"]}, {"id": "sonar", "e": "📡", "n": "Nível/distância", "d": "HC-SR04 para tanques e objetos", "c": ["sensor_dist"]}, {"id": "display", "e": "📟", "n": "Display local", "d": "Exibir leituras em tempo real", "c": ["display"]}, {"id": "buzzer", "e": "🔔", "n": "Alarme sonoro", "d": "Aviso em condições críticas", "c": ["buzzer"]}, {"id": "cap", "e": "⚡", "n": "Estabilização", "d": "Capacitores para filtrar leituras", "c": ["cap", "resistor"]}], "audio": [{"id": "amp", "e": "📢", "n": "Amplificação", "d": "Transistor para amplificar sinal", "c": ["transistor", "resistor", "cap"]}, {"id": "buzzer", "e": "🎵", "n": "Geração de tom", "d": "Buzzer passivo + PWM", "c": ["buzzer", "resistor"]}, {"id": "pot", "e": "🎚", "n": "Controle de volume", "d": "Potenciômetro para ajuste", "c": ["pot", "resistor"]}, {"id": "cap", "e": "⚡", "n": "Filtros de áudio", "d": "Capacitores para passa-baixa/alta", "c": ["cap", "resistor"]}, {"id": "led", "e": "💡", "n": "VU Meter", "d": "LEDs para indicador de nível", "c": ["led", "resistor", "transistor"]}], "display": [{"id": "display", "e": "📟", "n": "Display LCD/OLED", "d": "Tela principal para dados", "c": ["display", "resistor"]}, {"id": "temp", "e": "🌡", "n": "Temperatura", "d": "Dado a exibir em tempo real", "c": ["sensor_temp"]}, {"id": "button", "e": "🔘", "n": "Botões de navegação", "d": "Navegar menus e ajustar", "c": ["button", "resistor"]}, {"id": "pot", "e": "🎚", "n": "Contraste/brilho", "d": "Potenciômetro para LCD", "c": ["pot"]}, {"id": "buzzer", "e": "🔔", "n": "Bipe de confirmação", "d": "Feedback ao pressionar", "c": ["buzzer"]}], "energia": [{"id": "cap", "e": "⚡", "n": "Filtro de alimentação", "d": "Capacitores para filtragem", "c": ["cap", "resistor"]}, {"id": "tr", "e": "🔧", "n": "Regulação", "d": "Transistores e reguladores", "c": ["transistor", "resistor", "cap"]}, {"id": "led", "e": "💡", "n": "Indicador LED", "d": "Sinalizar se está ligado", "c": ["led", "resistor"]}, {"id": "temp", "e": "🌡", "n": "Proteção térmica", "d": "Sensor para superaquecimento", "c": ["sensor_temp", "transistor"]}, {"id": "display", "e": "📟", "n": "Voltímetro digital", "d": "Exibir tensão e corrente", "c": ["display", "resistor"]}], "seguranca": [{"id": "pir", "e": "👁", "n": "Sensor de presença", "d": "PIR para detectar movimento", "c": ["sensor_pir"]}, {"id": "buzzer", "e": "🚨", "n": "Sirene", "d": "Buzzer ativo para alarme", "c": ["buzzer", "transistor"]}, {"id": "led", "e": "🔴", "n": "LED piscante", "d": "Indicador visual de alarme", "c": ["led", "resistor"]}, {"id": "button", "e": "🔘", "n": "Armar/desarmar", "d": "Botão de controle do sistema", "c": ["button", "resistor"]}, {"id": "rele", "e": "🔌", "n": "Sirene 127V", "d": "Relé para sirene externa", "c": ["rele", "transistor"]}, {"id": "ldr", "e": "☀", "n": "Sensor de abertura", "d": "LDR para detectar tampas", "c": ["ldr", "resistor"]}, {"id": "display", "e": "📟", "n": "Painel de status", "d": "Mostrar estado do sistema", "c": ["display"]}]};
+var CINFO={"resistor": {"n": "Resistores", "c": "#00e5c0", "p": "high", "a": "card-1", "w": "Essencial para limitar corrente e proteger todos os outros componentes.", "t": "R=(Vcc−Vf)÷If para LED. Use 10kΩ pull-up/down. Arduino INPUT_PULLUP usa ~20kΩ interno."}, "cap": {"n": "Capacitores", "c": "#ffb800", "p": "med", "a": "card-2", "w": "Indispensável para filtrar ruído de alimentação e estabilizar tensões.", "t": "100nF cerâmico junto ao Vcc de cada CI. 100–1000µF eletrolítico na saída da fonte."}, "led": {"n": "LEDs + Resistor", "c": "#ff4e7e", "p": "high", "a": "card-3", "w": "Feedback visual mais simples. NUNCA conecte sem resistor em série.", "t": "220–470Ω para 5V LED vermelho. 100–220Ω para azul/branco. Ânodo=perna maior=positivo."}, "transistor": {"n": "Transistores", "c": "#b97dff", "p": "med", "a": "card-4", "w": "Necessário quando a carga exige mais de 40mA (limite do pino do Arduino).", "t": "BC547 NPN: Rb=(5−0.7)÷Ib_sat. Sempre diodo 1N4007 antiparalelo na bobina do relé."}, "rele": {"n": "Relé eletromecânico", "c": "#b97dff", "p": "med", "a": "card-4", "w": "Única forma segura de controlar 127/220V com isolação galvânica total.", "t": "Módulo pronto inclui transistor+diodo. Alimentação da carga separada do Arduino."}, "protoboard": {"n": "Protoboard + Jumpers", "c": "#8fff4e", "p": "high", "a": "card-5", "w": "Indispensável para prototipar sem solda.", "t": "Vermelho=Vcc, Preto=GND. Grupos de 5 furos conectados. Não ultrapasse 1A por trilha."}, "button": {"n": "Push Button", "c": "#4ea8ff", "p": "high", "a": "card-6", "w": "Forma mais simples de entrada digital do usuário.", "t": "INPUT_PULLUP: sem resistor externo. Detecta LOW quando pressionado."}, "pot": {"n": "Potenciômetro", "c": "#4ea8ff", "p": "med", "a": "card-6", "w": "Controle analógico contínuo para velocidade, volume e brilho.", "t": "T1=Vcc, T3=GND, T2(cursor)=A0. analogRead() retorna 0–1023 no Arduino Uno."}, "ldr": {"n": "LDR (Fotoresistor)", "c": "#00cfff", "p": "med", "a": "card-7", "w": "Sensor mais simples para detectar luminosidade do ambiente.", "t": "Divisor: LDR entre Vcc e A0; 10kΩ entre A0 e GND. Alto=escuro, Baixo=claro."}, "sensor_temp": {"n": "Sensor DHT22", "c": "#00cfff", "p": "high", "a": "card-7", "w": "Temperatura e umidade digital com biblioteca pronta.", "t": "Pull-up 4.7kΩ no pino data. DHT22: precisão ±0.5°C. Leitura a cada 2s mínimo."}, "sensor_dist": {"n": "HC-SR04 (distância)", "c": "#00cfff", "p": "high", "a": "card-7", "w": "Mede distância de 2 a 400cm por ultrassom sem contato.", "t": "Trig: 10µs HIGH. dist = (pulso_us × 0.034) ÷ 2 cm. Alimentar com 5V obrigatório."}, "sensor_pir": {"n": "Sensor PIR", "c": "#00cfff", "p": "high", "a": "card-7", "w": "Detecta presença com baixíssimo consumo (~50µA em standby).", "t": "30–60s warm-up. Saída HIGH quando detecta. Ajuste trimpot de sensibilidade e tempo."}, "buzzer": {"n": "Buzzer", "c": "#ff7a2f", "p": "high", "a": "card-8", "w": "Feedback sonoro imediato sem componentes extras.", "t": "Ativo: HIGH aciona. Passivo: tone(pino, 440) toca Lá4 (440Hz). noTone(pino) para."}, "motor": {"n": "Motor DC + L298N", "c": "#ff7a2f", "p": "high", "a": "card-8", "w": "Transforma corrente em movimento. Precisa de driver obrigatoriamente.", "t": "IN1+IN2=direção; ENA+PWM=velocidade. Fonte separada para o motor."}, "servo": {"n": "Servo Motor", "c": "#ff7a2f", "p": "high", "a": "card-8", "w": "Posicionamento angular preciso (0–180°) sem driver extra.", "t": "Servo.h: myServo.write(90) = 90°. Use fonte externa para mais de 2 servos."}, "display": {"n": "Display OLED/LCD", "c": "#ff7a2f", "p": "high", "a": "card-8", "w": "Interface visual em tempo real com o usuário.", "t": "OLED SSD1306 I²C: SDA+SCL. Lib Adafruit GFX. LCD 16×2 I²C economiza pinos."}};
+var cur_step=1,cur_cat=null,sfeats=new Set();
+function sc2(el){document.querySelectorAll('.pcat').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');cur_cat=el.dataset.cat;sfeats.clear();g('bnext').disabled=false;g('fni').textContent='Categoria selecionada!';}
+function buildFL(){g('flist').innerHTML=(FEATS[cur_cat]||[]).map(function(f){return'<div class="fi" id="fi-'+f.id+'" onclick="tf(''+f.id+'')"><div class="fck">✓</div><div class="fem">'+f.e+'</div><div><div class="fn">'+f.n+'</div><div class="fd">'+f.d+'</div><div class="fctags">'+f.c.map(function(c){return CINFO[c]?'<span class="fct">'+CINFO[c].n+'</span>':''}).join('')+'</div></div></div>';}).join('');}
+function tf(id){var el=g('fi-'+id);if(sfeats.has(id)){sfeats.delete(id);el.classList.remove('sel');}else{sfeats.add(id);el.classList.add('sel');}var n=sfeats.size;g('bnext').disabled=n===0;g('fni').textContent=n===0?'Selecione ao menos uma':n+' selecionada'+(n>1?'s':'');}
+function buildRes(){var needed=new Map();(FEATS[cur_cat]||[]).forEach(function(f){if(!sfeats.has(f.id))return;f.c.forEach(function(c){if(!needed.has(c))needed.set(c,[]);needed.get(c).push(f.n);});});var ra=g('rarea');if(!needed.size){ra.innerHTML='<div style="text-align:center;padding:2rem;color:var(--dim)">Selecione funcionalidades no passo 2</div>';return;}var o={high:0,med:1,low:2};var sorted=[...needed.entries()].sort(function(a,b){return(o[(CINFO[a[0]]||{}).p]||2)-(o[(CINFO[b[0]]||{}).p]||2);});var intro='Seu projeto precisa de <strong>'+sorted.length+' componente'+(sorted.length>1?'s':'')+'</strong>. <span style="color:#00e5c0;font-weight:700">●ESSENCIAL</span> = obrigatório · <span style="color:#ffb800;font-weight:700">●RECOMENDADO</span> = melhora muito.';var items=sorted.map(function(entry){var id=entry[0],uses=entry[1];var ci=CINFO[id]||{n:id,c:'#888',p:'low',a:'#',w:'',t:''};var pL=ci.p==='high'?'ESSENCIAL':ci.p==='med'?'RECOMENDADO':'OPCIONAL';var pC=ci.p==='high'?'h':ci.p==='med'?'m':'l';return'<div class="rc" style="--sc:'+ci.c+'"><div class="rch" onclick="this.closest('.rc').classList.toggle('open')"><div class="rcd" style="background:'+ci.c+'"></div><div><div class="rcn">'+ci.n+'</div><div class="rcw">Para: '+uses.slice(0,2).join(', ')+(uses.length>2?' …':'')+'</div></div><span class="pl '+pC+'">'+pL+'</span><span class="rcc">▼</span></div><div class="rcb"><div class="rcd2"><strong>Por que precisa?</strong> '+ci.w+'<div class="rctp"><strong>Dica prática</strong>'+ci.t+'</div><div class="rcls"><a class="rcl" href="#'+ci.a+'">Ver guia ↑</a></div></div></div></div>';}).join('');ra.innerHTML='<div class="rinto">🎉 '+intro+'</div><div class="rcs">'+items+'</div>';}
+function gst(n){if(n===2&&!cur_cat)return;if(n===3&&!sfeats.size)return;cur_step=n;if(n===2)buildFL();if(n===3)buildRes();rst();}
+function nst(){if(cur_step===1&&!cur_cat)return;if(cur_step===2&&!sfeats.size)return;cur_step++;if(cur_step===2)buildFL();if(cur_step===3)buildRes();rst();}
+function pst(){cur_step--;rst();}
+function rst(){document.querySelectorAll('.fp').forEach(function(p,i){p.classList.toggle('show',i+1===cur_step);});document.querySelectorAll('.fst').forEach(function(s,i){s.classList.toggle('on',i+1===cur_step);s.classList.toggle('dn',i+1<cur_step);});var bp=g('bprev'),bn=g('bnext'),ni=g('fni');bp.style.display=cur_step>1?'':'none';if(cur_step===3){bn.textContent='🔄 Recomeçar';bn.onclick=function(){cur_step=1;cur_cat=null;sfeats.clear();document.querySelectorAll('.pcat').forEach(function(c){c.classList.remove('sel');});rst();};bn.disabled=false;ni.textContent='Clique em cada item para dicas detalhadas';}else if(cur_step===2){bn.textContent='Ver lista →';bn.onclick=nst;bn.disabled=!sfeats.size;ni.textContent=sfeats.size?sfeats.size+' selecionada'+(sfeats.size>1?'s':''):'Selecione ao menos uma';}else{bn.textContent='Próximo →';bn.onclick=nst;bn.disabled=!cur_cat;ni.textContent=cur_cat?'Próximo: funcionalidades':'Selecione o tipo de projeto';}}
+</script>
+</body>
+</html>
